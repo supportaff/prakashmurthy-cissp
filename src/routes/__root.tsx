@@ -6,7 +6,7 @@ import appCss from "../styles.css?url";
 
 const APP_NAME = "Prakashmurthy";
 const APP_DESCRIPTION =
-  "Live 2-hour CISSP webinar with Prakashmurthy on Sunday 4 October. How I passed on the first attempt. ₹199 / $3.99. Live only, no recording. connect@prakashmurthy.com";
+  "Live 2-hour CISSP webinar with Prakashmurthy on Sunday 4 October. How I passed on the first attempt. ₹199 / $3.99 / €3.99. Live only, no recording. connect@prakashmurthy.com";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -15,7 +15,7 @@ export const Route = createRootRoute({
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: APP_NAME },
       { name: "description", content: APP_DESCRIPTION },
-      { name: "theme-color", content: "#0b0c0e" },
+      { name: "theme-color", content: "#faf9f6" },
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },

@@ -2,7 +2,7 @@
 
 Landing page for the live 2-hour CISSP session on **Sunday 4 October, 10:00 IST**.
 
-- ₹199 / $3.99
+- ₹199 / $3.99 / €3.99
 - Live only, no recording
 - Host: [Prakashmurthy](https://prakashmurthy.com) · [connect@prakashmurthy.com](mailto:connect@prakashmurthy.com)
 
