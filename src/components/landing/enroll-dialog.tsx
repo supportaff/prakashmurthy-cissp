@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { CalendarPlus, Check, Mail } from "lucide-react";
 import { toast } from "sonner";
@@ -185,7 +186,15 @@ export function EnrollDialog({ open, onOpenChange, sessionAt, onPaid }: Props) {
                 {pending ? "Opening Dodo…" : `Pay · ${session}`}
               </Button>
               <p className="text-center text-xs text-muted">
-                Secure checkout on Dodo. No dumps. No recording. No upsell on the call.
+                By paying you agree to the{" "}
+                <Link to="/terms" className="text-fg underline underline-offset-4">
+                  Terms
+                </Link>{" "}
+                and{" "}
+                <Link to="/privacy" className="text-fg underline underline-offset-4">
+                  Privacy policy
+                </Link>
+                . Checkout on Dodo. Live only — no recording.
               </p>
             </form>
           </>

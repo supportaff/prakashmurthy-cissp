@@ -253,6 +253,10 @@ export function faqsFor(price: string) {
       a: "No. This session is live only. Take notes. If you miss Sunday 4 October, this sitting is gone.",
     },
     {
+      q: "Where are the terms and privacy policy?",
+      a: "Footer of this site — Terms and Privacy. Paying on Dodo means you agree to both.",
+    },
+    {
       q: "What about the 5-year experience rule?",
       a: "You still need it to become CISSP (or you take the Associate path). You do not need it to sit this briefing. Plenty of Associates use it to pass the exam first.",
     },

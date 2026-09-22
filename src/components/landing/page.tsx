@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
@@ -240,7 +241,7 @@ function Hero({
           <div className="overflow-hidden rounded-xl">
             <img
               src="/images/hero.jpg"
-              alt="A quiet evening briefing desk — notebook, pen, and a dark window onto the city."
+              alt="Empty cybersecurity operations center — wall of network maps and lock glyphs, no people."
               width={1792}
               height={1008}
               className="aspect-video w-full object-cover"
@@ -456,7 +457,7 @@ function Agenda() {
           <div className="relative mt-8 overflow-hidden rounded-xl">
             <img
               src="/images/session.jpg"
-              alt="A small evening workshop watching a dim screen."
+              alt="Security-architect desk: brass padlock, notebook, and an architecture diagram on a tablet."
               width={1792}
               height={1008}
               className="aspect-video w-full object-cover"
@@ -730,6 +731,17 @@ function Footer() {
           </p>
         </div>
         <div className="flex flex-col gap-2 sm:items-end">
+          <div className="flex flex-wrap gap-x-4 gap-y-2 sm:justify-end">
+            <Link to="/terms" className="text-fg transition-colors duration-150 hover:text-accent">
+              Terms
+            </Link>
+            <Link
+              to="/privacy"
+              className="text-fg transition-colors duration-150 hover:text-accent"
+            >
+              Privacy
+            </Link>
+          </div>
           <a
             href={`mailto:${HOST_EMAIL}`}
             className="inline-flex items-center gap-2 text-fg transition-colors duration-150 hover:text-accent"
