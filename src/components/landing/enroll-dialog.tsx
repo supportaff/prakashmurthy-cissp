@@ -121,8 +121,8 @@ export function EnrollDialog({ open, onOpenChange, sessionAt, onPaid }: Props) {
               <DialogTitle>Sunday 4 Oct · {session}</DialogTitle>
               <DialogDescription>
                 {formatSessionLong(sessionAt)}. Pick ₹, $, or € — Dodo takes the
-                payment. Join link lands in your inbox from {HOST_EMAIL}. Live
-                only, no recording.
+                payment. The join link is emailed from {HOST_EMAIL} as soon as
+                Dodo confirms the charge. Live only, no recording.
               </DialogDescription>
             </DialogHeader>
             <div>

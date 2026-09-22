@@ -194,59 +194,46 @@ function Hero({
   const { session, exam } = useMoney();
   return (
     <section className="relative">
-      <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 lg:grid-cols-12 lg:gap-12 lg:px-8 lg:py-20">
-        <div className="lg:col-span-6">
-          <p className="fs-enter text-kicker font-medium uppercase text-accent">
-            Live webinar · Sunday 4 Oct · {session}
-          </p>
-          <h1
-            className="fs-enter font-display mt-4 text-display font-medium tracking-tight"
-            style={{ animationDelay: "80ms" }}
+      <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 lg:px-8 lg:py-24">
+        <p className="fs-enter text-kicker font-medium uppercase text-accent">
+          Live webinar · Sunday 4 Oct · {session}
+        </p>
+        <h1
+          className="fs-enter font-display mt-4 text-display font-medium tracking-tight"
+          style={{ animationDelay: "80ms" }}
+        >
+          I passed CISSP on the <em className="font-normal italic">first attempt.</em> These two hours are how.
+        </h1>
+        <p
+          className="fs-enter mt-5 max-w-xl text-base text-muted sm:text-lg"
+          style={{ animationDelay: "140ms" }}
+        >
+          Not a CBK lecture. The thinking switch, CAT pacing, stem words, and
+          48-hour plan I used so I never paid the {exam} exam twice. Live only
+          — no recording. You leave with a drill you can sit this week.
+        </p>
+        <div
+          className="fs-enter mt-8 flex flex-col gap-3 sm:flex-row sm:items-center"
+          style={{ animationDelay: "200ms" }}
+        >
+          <Button size="lg" onClick={onReserve}>
+            {cta}
+            <ArrowRight />
+          </Button>
+          <a
+            href="#you-get"
+            className="inline-flex h-12 items-center justify-center px-2 text-sm text-muted transition-colors duration-150 hover:text-fg"
           >
-            I passed CISSP on the <em className="font-normal italic">first attempt.</em> These two hours are how.
-          </h1>
-          <p
-            className="fs-enter mt-5 max-w-xl text-base text-muted sm:text-lg"
-            style={{ animationDelay: "140ms" }}
-          >
-            Not a CBK lecture. The thinking switch, CAT pacing, stem words, and
-            48-hour plan I used so I never paid the {exam} exam twice. Live only
-            — no recording. You leave with a drill you can sit this week.
-          </p>
-          <div
-            className="fs-enter mt-8 flex flex-col gap-3 sm:flex-row sm:items-center"
-            style={{ animationDelay: "200ms" }}
-          >
-            <Button size="lg" onClick={onReserve}>
-              {cta}
-              <ArrowRight />
-            </Button>
-            <a
-              href="#you-get"
-              className="inline-flex h-12 items-center justify-center px-2 text-sm text-muted transition-colors duration-150 hover:text-fg"
-            >
-              See exactly what you get
-            </a>
-          </div>
-          <div className="fs-enter mt-8" style={{ animationDelay: "260ms" }}>
-            <p className="mb-3 text-xs uppercase tracking-wider text-subtle">Goes live in</p>
-            <SessionClock target={sessionAt} size="hero" />
-            <p className="mt-3 text-xs text-muted">
-              {formatSessionLong(sessionAt)} · live only · no recording
-            </p>
-            <LocalTime date={sessionAt} />
-          </div>
+            See exactly what you get
+          </a>
         </div>
-        <div className="lg:col-span-6">
-          <div className="overflow-hidden rounded-xl">
-            <img
-              src="/images/hero.jpg"
-              alt="Empty cybersecurity operations center — wall of network maps and lock glyphs, no people."
-              width={1792}
-              height={1008}
-              className="aspect-video w-full object-cover"
-            />
-          </div>
+        <div className="fs-enter mt-10" style={{ animationDelay: "260ms" }}>
+          <p className="mb-3 text-xs uppercase tracking-wider text-subtle">Goes live in</p>
+          <SessionClock target={sessionAt} size="hero" />
+          <p className="mt-3 text-xs text-muted">
+            {formatSessionLong(sessionAt)} · live only · no recording
+          </p>
+          <LocalTime date={sessionAt} />
         </div>
       </div>
     </section>

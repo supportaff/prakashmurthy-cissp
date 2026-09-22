@@ -230,7 +230,7 @@ export function faqsFor(price: string) {
     },
     {
       q: "How do I pay, and how do I join?",
-      a: `Pick ₹, $, or €, then pay on Dodo Payments. After checkout I’ll send the join link to your email from ${HOST_EMAIL}.`,
+      a: `Pick ₹, $, or €, then pay on Dodo Payments. After checkout the join link is emailed to you from ${HOST_EMAIL}.`,
     },
     {
       q: "Is this affiliated with ISC2?",

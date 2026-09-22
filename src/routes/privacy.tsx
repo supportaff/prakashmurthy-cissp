@@ -52,8 +52,9 @@ function PrivacyPage() {
         <h2>Why</h2>
         <p>
           To take payment, issue a receipt, email the join link from{" "}
-          {HOST_EMAIL}, and answer support mail. We do not sell lists, run ads
-          on this data, or train models on it.
+          {HOST_EMAIL} as soon as Dodo confirms the charge, and answer support
+          mail. We do not sell lists, run ads on this data, or train models on
+          it.
         </p>
       </section>
 
