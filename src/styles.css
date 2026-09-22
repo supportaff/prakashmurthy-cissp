@@ -1,0 +1,154 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --color-bg: #0b0c0e;
+  --color-background: #0b0c0e;
+  --color-surface: #141618;
+  --color-elevated: #1c1e22;
+  --color-fg: #ecece8;
+  --color-foreground: #ecece8;
+  --color-muted: #8d9096;
+  --color-muted-foreground: #8d9096;
+  --color-subtle: #6a6d73;
+  --color-primary: #ecece8;
+  --color-primary-foreground: #0b0c0e;
+  --color-accent: #a8b0bc;
+  --color-accent-foreground: #0b0c0e;
+  --color-border: rgb(236 236 232 / 0.12);
+  --color-input: rgb(236 236 232 / 0.14);
+  --color-ring: #a8b0bc;
+  --color-card: #141618;
+  --color-card-foreground: #ecece8;
+  --color-secondary: #1c1e22;
+  --color-secondary-foreground: #ecece8;
+  --color-destructive: #c45c4a;
+  --color-destructive-foreground: #ecece8;
+  --color-popover: #1c1e22;
+  --color-popover-foreground: #ecece8;
+  --color-paper: #e6e1d6;
+  --color-paper-fg: #161410;
+  --color-paper-muted: #5c5850;
+  --color-paper-line: rgb(22 20 16 / 0.12);
+
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, ui-serif, serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --radius: 0.75rem;
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+
+  --text-display: clamp(2.5rem, 1.35rem + 4.6vw, 4.75rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.03em;
+  --text-kicker: 0.6875rem;
+  --text-kicker--line-height: 1.3;
+  --text-kicker--letter-spacing: 0.16em;
+
+  --shadow-border:
+    0 0 0 1px rgb(236 236 232 / 0.08);
+  --shadow-border-hover:
+    0 0 0 1px rgb(236 236 232 / 0.14);
+  --shadow-paper:
+    0 0 0 1px rgb(22 20 16 / 0.08),
+    0 1px 2px -1px rgb(22 20 16 / 0.06),
+    0 8px 24px -12px rgb(22 20 16 / 0.12);
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-smooth-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: var(--color-bg);
+    color: var(--color-fg);
+  }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  img {
+    outline: 1px solid rgb(236 236 232 / 0.1);
+    outline-offset: -1px;
+  }
+
+  ::selection {
+    background: rgb(168 176 188 / 0.35);
+    color: var(--color-fg);
+  }
+}
+
+@utility pb-safe {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
+@utility dialog-width {
+  width: min(28rem, calc(100vw - 1.5rem));
+}
+
+@utility aspect-portrait {
+  aspect-ratio: 3 / 4;
+}
+
+@utility dialog-max-h {
+  max-height: min(90dvh, 40rem);
+}
+
+@keyframes fs-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@utility fs-enter {
+  animation: fs-rise 500ms var(--ease-smooth-out) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fs-enter {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

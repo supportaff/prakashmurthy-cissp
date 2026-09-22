@@ -1,0 +1,17 @@
+node_modules
+.vercel
+.tanstack
+.grok
+.output
+dist
+.env
+.env.*
+*.log
+.project_id
+.node_modules.lock
+screenshots
+attachments
+artifacts
+AGENTS.md
+AGENTS.project.md
+startup.sh
