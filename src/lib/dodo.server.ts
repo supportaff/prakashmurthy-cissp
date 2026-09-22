@@ -6,13 +6,11 @@ import type { CheckoutInput, CheckoutResult } from "@/lib/checkout";
 const PRODUCT_ENV: Record<Currency, string> = {
   INR: "DODO_PRODUCT_INR",
   USD: "DODO_PRODUCT_USD",
-  EUR: "DODO_PRODUCT_EUR",
 };
 
 const LINK_ENV: Record<Currency, string> = {
   INR: "DODO_PAY_LINK_INR",
   USD: "DODO_PAY_LINK_USD",
-  EUR: "DODO_PAY_LINK_EUR",
 };
 
 function origin(): string {
@@ -79,6 +77,6 @@ export async function createDodoCheckout(input: CheckoutInput): Promise<Checkout
   return {
     ok: false,
     error:
-      "Dodo Payments is not connected yet. Add DODO_PAYMENTS_API_KEY and DODO_PRODUCT_INR / USD / EUR on Vercel.",
+      "Dodo Payments is not connected yet. Add DODO_PAYMENTS_API_KEY and DODO_PRODUCT_INR / USD on Vercel.",
   };
 }

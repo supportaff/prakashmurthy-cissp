@@ -129,7 +129,7 @@ function TopBar() {
         <span aria-hidden="true" className="hidden text-border sm:inline">
           ·
         </span>
-        <span className="hidden sm:inline">Pay in ₹ $ €</span>
+        <span className="hidden sm:inline">Pay in ₹ $</span>
       </p>
     </div>
   );
@@ -612,7 +612,7 @@ function Price({
     <section id="reserve" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
       <div className="grid gap-10 rounded-2xl bg-surface p-6 shadow-[var(--shadow-border)] sm:p-10 lg:grid-cols-12">
         <div className="lg:col-span-7">
-          <p className="text-kicker font-medium uppercase text-accent">Pay in ₹, $, or €</p>
+          <p className="text-kicker font-medium uppercase text-accent">Pay in ₹ or $</p>
           <h2 className="font-display mt-3 text-3xl font-medium tracking-tight sm:text-4xl">
             {session} to not spend {exam} twice.
           </h2>
