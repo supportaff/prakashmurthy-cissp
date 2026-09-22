@@ -1,11 +1,8 @@
 import { HOST_EMAIL, HOST_NAME, SITE_URL, mailtoHost } from "@/lib/brand";
 import type { Currency } from "@/lib/currency";
 
-export const SEATS_TOTAL = 40;
-export const SEATS_LEFT_DEFAULT = 17;
 export const SESSION_MINUTES = 120;
 export const ENROLL_KEY = "prakash:enroll";
-export const SEATS_KEY = "prakash:seats-left";
 
 /** Sunday 4 October 2026, 10:00 IST (04:30 UTC). */
 export const SESSION_AT = new Date(Date.UTC(2026, 9, 4, 4, 30, 0));
@@ -16,6 +13,7 @@ export type Enrollment = {
   window: ExamWindow;
   currency: Currency;
   price: string;
+  paid?: boolean;
   at: string;
 };
 
@@ -90,7 +88,7 @@ export function sessionIcs(date: Date, name: string, price: string): string {
     `DTEND:${end}`,
     `ORGANIZER;CN=${HOST_NAME}:MAILTO:${HOST_EMAIL}`,
     `SUMMARY:${HOST_NAME} — CISSP first-attempt webinar`,
-    `DESCRIPTION:Live 2-hour CISSP first-attempt session with ${HOST_NAME} for ${name}. Seat ${price}. Join link from ${HOST_EMAIL}. No recording.`,
+    `DESCRIPTION:Live 2-hour CISSP first-attempt session with ${HOST_NAME} for ${name}. Paid ${price} via Dodo. Join link from ${HOST_EMAIL}. No recording.`,
     "LOCATION:Live online",
     `URL:${SITE_URL}`,
     "END:VEVENT",
@@ -107,7 +105,7 @@ export function enrollMailto(enrollment: Enrollment): string {
       ``,
       `Name: ${enrollment.name}`,
       `Email: ${enrollment.email}`,
-      `Pay in: ${enrollment.price} (${enrollment.currency})`,
+      `Paid via Dodo: ${enrollment.price} (${enrollment.currency})`,
       `Exam window: ${windowLabel}`,
       ``,
       `Please send the join link to ${enrollment.email}.`,
@@ -130,20 +128,6 @@ export function readEnrollment(): Enrollment | null {
 
 export function writeEnrollment(enrollment: Enrollment): void {
   localStorage.setItem(ENROLL_KEY, JSON.stringify(enrollment));
-}
-
-export function readSeatsLeft(): number {
-  if (typeof window === "undefined") return SEATS_LEFT_DEFAULT;
-  const raw = localStorage.getItem(SEATS_KEY);
-  const n = raw ? Number(raw) : SEATS_LEFT_DEFAULT;
-  if (!Number.isFinite(n)) return SEATS_LEFT_DEFAULT;
-  return Math.min(SEATS_TOTAL, Math.max(3, Math.floor(n)));
-}
-
-export function takeSeat(): number {
-  const next = Math.max(3, readSeatsLeft() - 1);
-  localStorage.setItem(SEATS_KEY, String(next));
-  return next;
 }
 
 export const domains = [
@@ -246,7 +230,7 @@ export function faqsFor(price: string) {
     },
     {
       q: "How do I pay, and how do I join?",
-      a: `Reserve with your email. I send the join link and how to pay ${price} to that inbox from ${HOST_EMAIL}. Pick ₹, $, or € at the top — that is the currency I invoice.`,
+      a: `Pick ₹, $, or €, then pay on Dodo Payments. After checkout I’ll send the join link to your email from ${HOST_EMAIL}.`,
     },
     {
       q: "Is this affiliated with ISC2?",
@@ -266,7 +250,7 @@ export function faqsFor(price: string) {
     },
     {
       q: "Do I get a recording?",
-      a: "No. This session is live only. Take notes. If you miss Sunday 4 October, the seat is gone.",
+      a: "No. This session is live only. Take notes. If you miss Sunday 4 October, this sitting is gone.",
     },
     {
       q: "What about the 5-year experience rule?",

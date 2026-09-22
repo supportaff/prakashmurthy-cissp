@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { CurrencySelect, useMoney } from "@/components/landing/currency";
+import { startCheckout } from "@/lib/checkout";
 import { HOST_EMAIL, HOST_NAME } from "@/lib/brand";
 import {
   enrollMailto,
@@ -20,7 +21,6 @@ import {
   formatSessionLong,
   readEnrollment,
   sessionIcs,
-  takeSeat,
   writeEnrollment,
   type Enrollment,
   type ExamWindow,
@@ -30,21 +30,14 @@ type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   sessionAt: Date;
-  seatsLeft: number;
-  onReserved: (enrollment: Enrollment, seatsLeft: number) => void;
+  onPaid: (enrollment: Enrollment) => void;
 };
 
 function isEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
-export function EnrollDialog({
-  open,
-  onOpenChange,
-  sessionAt,
-  seatsLeft,
-  onReserved,
-}: Props) {
+export function EnrollDialog({ open, onOpenChange, sessionAt, onPaid }: Props) {
   const { session, currency } = useMoney();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -56,7 +49,10 @@ export function EnrollDialog({
   useEffect(() => {
     if (!open) return;
     const existing = readEnrollment();
-    if (existing) setDone(existing);
+    if (existing?.paid) {
+      setDone(existing);
+      onPaid(existing);
+    }
   }, [open]);
 
   function downloadIcs(enrollment: Enrollment) {
@@ -71,13 +67,13 @@ export function EnrollDialog({
     URL.revokeObjectURL(url);
   }
 
-  function submit(e: FormEvent) {
+  async function submit(e: FormEvent) {
     e.preventDefault();
     setError(null);
     const trimmed = name.trim();
     const mail = email.trim().toLowerCase();
     if (trimmed.length < 2) {
-      setError("Put the name you want on the seat.");
+      setError("Put the name you want on the receipt.");
       return;
     }
     if (!isEmail(mail)) {
@@ -91,47 +87,48 @@ export function EnrollDialog({
       window: windowId,
       currency,
       price: session,
+      paid: false,
       at: new Date().toISOString(),
     };
     writeEnrollment(enrollment);
-    const nextSeats = takeSeat();
-    setDone(enrollment);
-    setPending(false);
-    onReserved(enrollment, nextSeats);
-    const link = document.createElement("a");
-    link.href = enrollMailto(enrollment);
-    link.rel = "noopener";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    toast(`Seat held. Join link comes to ${mail}.`);
+    try {
+      const result = await startCheckout({
+        data: { name: trimmed, email: mail, currency, window: windowId },
+      });
+      if (!result.ok) {
+        setError(result.error);
+        setPending(false);
+        return;
+      }
+      toast("Opening Dodo checkout…");
+      window.location.href = result.checkoutUrl;
+    } catch {
+      setError("Could not start Dodo checkout. Try again.");
+      setPending(false);
+    }
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         {done ? (
-          <Success
-            enrollment={done}
-            sessionAt={sessionAt}
-            onCalendar={downloadIcs}
-          />
+          <Success enrollment={done} sessionAt={sessionAt} onCalendar={downloadIcs} />
         ) : (
           <>
             <DialogHeader>
-              <p className="text-kicker font-medium uppercase text-accent">Hold the seat</p>
-              <DialogTitle>Reserve Sunday 4 Oct · {session}</DialogTitle>
+              <p className="text-kicker font-medium uppercase text-accent">Pay on Dodo</p>
+              <DialogTitle>Sunday 4 Oct · {session}</DialogTitle>
               <DialogDescription>
-                {formatSessionLong(sessionAt)}. {seatsLeft} of 40 left. Pick ₹, $, or € —
-                that is how you pay. Join link lands in your inbox from {HOST_EMAIL}.
-                Live only, no recording.
+                {formatSessionLong(sessionAt)}. Pick ₹, $, or € — Dodo takes the
+                payment. Join link lands in your inbox from {HOST_EMAIL}. Live
+                only, no recording.
               </DialogDescription>
             </DialogHeader>
             <div>
               <p className="mb-2 text-xs uppercase tracking-wider text-subtle">Pay in</p>
               <CurrencySelect />
             </div>
-            <form onSubmit={submit} className="flex flex-col gap-4">
+            <form onSubmit={(ev) => void submit(ev)} className="flex flex-col gap-4">
               <Field label="Full name" htmlFor="fs-name">
                 <Input
                   id="fs-name"
@@ -185,10 +182,10 @@ export function EnrollDialog({
                 </p>
               ) : null}
               <Button type="submit" size="lg" disabled={pending} className="w-full">
-                {pending ? "Holding seat…" : `Reserve my seat · ${session}`}
+                {pending ? "Opening Dodo…" : `Pay · ${session}`}
               </Button>
               <p className="text-center text-xs text-muted">
-                No dumps. No recording. No upsell on the call.
+                Secure checkout on Dodo. No dumps. No recording. No upsell on the call.
               </p>
             </form>
           </>
@@ -232,14 +229,14 @@ function Success({
         </span>
         <DialogTitle>You’re in, {enrollment.name.split(" ")[0]}.</DialogTitle>
         <DialogDescription>
-          Seat held for {formatSessionLong(sessionAt)} at {enrollment.price}. I’ll send
-          the join link to {enrollment.email} from {HOST_EMAIL}.
+          {enrollment.price} received. I’ll send the join link for{" "}
+          {formatSessionLong(sessionAt)} to {enrollment.email} from {HOST_EMAIL}.
         </DialogDescription>
       </DialogHeader>
       <ol className="flex flex-col gap-3 text-sm">
         <li className="flex gap-3">
           <span className="w-4 shrink-0 font-mono text-xs text-muted">1</span>
-          Watch {enrollment.email} for the join link and how to pay {enrollment.price}.
+          Watch {enrollment.email} for the Sunday join link.
         </li>
         <li className="flex gap-3">
           <span className="w-4 shrink-0 font-mono text-xs text-muted">2</span>

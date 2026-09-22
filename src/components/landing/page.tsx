@@ -22,8 +22,6 @@ import { LocalTime, SessionClock } from "@/components/landing/countdown";
 import { EXAM_USD, USD_INR } from "@/lib/currency";
 import { HOST_EMAIL, HOST_NAME, SITE_HOST } from "@/lib/brand";
 import {
-  SEATS_LEFT_DEFAULT,
-  SEATS_TOTAL,
   agenda,
   attemptBeats,
   domains,
@@ -34,10 +32,10 @@ import {
   getNextSession,
   outcomes,
   readEnrollment,
-  readSeatsLeft,
   stories,
   tipsPreview,
   walkOutWith,
+  writeEnrollment,
   type Enrollment,
 } from "@/lib/session";
 
@@ -52,20 +50,29 @@ export function LandingPage() {
 function LandingInner() {
   const sessionAt = useMemo(() => getNextSession(), []);
   const [open, setOpen] = useState(false);
-  const [seats, setSeats] = useState(SEATS_LEFT_DEFAULT);
   const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
   const { session } = useMoney();
 
   useEffect(() => {
-    setSeats(readSeatsLeft());
-    setEnrollment(readEnrollment());
+    const existing = readEnrollment();
+    const paid = new URLSearchParams(window.location.search).get("paid") === "1";
+    if (paid && existing && !existing.paid) {
+      const next = { ...existing, paid: true };
+      writeEnrollment(next);
+      setEnrollment(next);
+      setOpen(true);
+      window.history.replaceState({}, "", window.location.pathname);
+      return;
+    }
+    setEnrollment(existing);
+    if (paid) setOpen(true);
   }, []);
 
   function reserve() {
     setOpen(true);
   }
 
-  const cta = enrollment ? "View my seat" : `Reserve my seat · ${session}`;
+  const cta = enrollment?.paid ? "You’re in" : `Pay · ${session}`;
 
   return (
     <div className="bg-bg text-fg">
@@ -75,10 +82,10 @@ function LandingInner() {
       >
         Skip to content
       </a>
-      <TopBar seats={seats} />
+      <TopBar />
       <Header onReserve={reserve} cta={cta} />
       <main id="main" className="pb-24 lg:pb-0">
-        <Hero sessionAt={sessionAt} seats={seats} onReserve={reserve} cta={cta} />
+        <Hero sessionAt={sessionAt} onReserve={reserve} cta={cta} />
         <CostOfFail />
         <Attempt />
         <Outcomes onReserve={reserve} cta={cta} />
@@ -88,32 +95,29 @@ function LandingInner() {
         <Domains />
         <Host />
         <Stories />
-        <Price onReserve={reserve} cta={cta} seats={seats} sessionAt={sessionAt} />
+        <Price onReserve={reserve} cta={cta} sessionAt={sessionAt} />
         <Faq />
-        <Close sessionAt={sessionAt} seats={seats} onReserve={reserve} cta={cta} />
+        <Close sessionAt={sessionAt} onReserve={reserve} cta={cta} />
       </main>
       <Footer />
       <StickyBar
         sessionAt={sessionAt}
-        seats={seats}
         onReserve={reserve}
-        enrolled={Boolean(enrollment)}
+        enrolled={Boolean(enrollment?.paid)}
       />
       <EnrollDialog
         open={open}
         onOpenChange={setOpen}
         sessionAt={sessionAt}
-        seatsLeft={seats}
-        onReserved={(next, left) => {
+        onPaid={(next) => {
           setEnrollment(next);
-          setSeats(left);
         }}
       />
     </div>
   );
 }
 
-function TopBar({ seats }: { seats: number }) {
+function TopBar() {
   return (
     <div className="bg-elevated text-fg">
       <p className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-3 px-4 py-2 text-center text-xs text-muted sm:px-6">
@@ -121,9 +125,7 @@ function TopBar({ seats }: { seats: number }) {
         <span aria-hidden="true" className="text-border">
           ·
         </span>
-        <span>
-          {seats} of {SEATS_TOTAL} seats · live only
-        </span>
+        <span>Live only · no recording</span>
         <span aria-hidden="true" className="hidden text-border sm:inline">
           ·
         </span>
@@ -181,12 +183,10 @@ function Mark() {
 
 function Hero({
   sessionAt,
-  seats,
   onReserve,
   cta,
 }: {
   sessionAt: Date;
-  seats: number;
   onReserve: () => void;
   cta: string;
 }) {
@@ -231,12 +231,12 @@ function Hero({
             <p className="mb-3 text-xs uppercase tracking-wider text-subtle">Goes live in</p>
             <SessionClock target={sessionAt} size="hero" />
             <p className="mt-3 text-xs text-muted">
-              {formatSessionLong(sessionAt)} · {seats} of {SEATS_TOTAL} seats · no recording
+              {formatSessionLong(sessionAt)} · live only · no recording
             </p>
             <LocalTime date={sessionAt} />
           </div>
         </div>
-        <div className="relative pb-10 lg:col-span-6">
+        <div className="lg:col-span-6">
           <div className="overflow-hidden rounded-xl">
             <img
               src="/images/hero.jpg"
@@ -245,19 +245,6 @@ function Hero({
               height={1008}
               className="aspect-video w-full object-cover"
             />
-          </div>
-          <div className="absolute bottom-2 left-4 right-4 flex gap-3 rounded-lg bg-surface p-3 shadow-[var(--shadow-border)] sm:left-6 sm:right-auto sm:max-w-xs">
-            <img
-              src="/images/host.jpg?v=3"
-              alt={`${HOST_NAME}, CISSP`}
-              width={841}
-              height={1122}
-              className="size-16 rounded-md object-cover object-top"
-            />
-            <div className="min-w-0 py-0.5">
-              <p className="text-sm font-medium">{HOST_NAME} · CISSP</p>
-              <p className="text-xs text-muted">One sitting. Passed. I teach that sitting.</p>
-            </div>
           </div>
         </div>
       </div>
@@ -538,58 +525,45 @@ function Domains() {
 function Host() {
   return (
     <section id="host" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-      <div className="grid items-center gap-10 lg:grid-cols-12">
-        <div className="overflow-hidden rounded-xl lg:col-span-5">
-          <img
-            src="/images/host.jpg?v=3"
-            alt={`Portrait of ${HOST_NAME}`}
-            width={841}
-            height={1122}
-            className="aspect-portrait w-full object-cover object-top"
-          />
-        </div>
-        <div className="lg:col-span-7 lg:pl-6">
-          <p className="text-kicker font-medium uppercase text-accent">{HOST_NAME}</p>
-          <h2 className="font-display mt-3 text-3xl font-medium tracking-tight sm:text-4xl">
-            I teach the sitting I actually had — not the one I wish I’d had.
-          </h2>
-          <div className="mt-4 flex max-w-prose flex-col gap-4 text-muted">
-            <p>
-              Independent. Not ISC2. No unofficial item banks. I passed CISSP on
-              the first attempt after my mocks stalled. This Sunday, 4 October, I
-              run the same room so you do not fund the retake I almost bought.
-            </p>
-            <p>
-              Questions before you sit:{" "}
-              <a
-                href={`mailto:${HOST_EMAIL}`}
-                className="text-fg underline-offset-4 hover:underline"
-              >
-                {HOST_EMAIL}
-              </a>
-              . If you want dumps, leave. If you want the thinking switch, the stem
-              drill, and a 48-hour plan that fits a working week — sit with us.
-            </p>
-          </div>
-          <ul className="mt-8 grid gap-3 text-sm sm:grid-cols-3">
-            <li className="rounded-lg bg-surface p-4 shadow-[var(--shadow-border)]">
-              <Clock3 className="size-4 text-accent" />
-              <p className="mt-3 font-medium">Sunday 4 Oct</p>
-              <p className="mt-1 text-muted">10:00–12:00 IST. Forty seats. No overflow room.</p>
-            </li>
-            <li className="rounded-lg bg-surface p-4 shadow-[var(--shadow-border)]">
-              <Shield className="size-4 text-accent" />
-              <p className="mt-3 font-medium">Independent</p>
-              <p className="mt-1 text-muted">Not affiliated with ISC2. No unofficial item banks.</p>
-            </li>
-            <li className="rounded-lg bg-surface p-4 shadow-[var(--shadow-border)]">
-              <Calendar className="size-4 text-accent" />
-              <p className="mt-3 font-medium">Live only</p>
-              <p className="mt-1 text-muted">No recording. Take notes. Miss it and the seat is gone.</p>
-            </li>
-          </ul>
-        </div>
+      <p className="text-kicker font-medium uppercase text-accent">{HOST_NAME}</p>
+      <h2 className="font-display mt-3 max-w-3xl text-3xl font-medium tracking-tight sm:text-4xl">
+        I teach the sitting I actually had — not the one I wish I’d had.
+      </h2>
+      <div className="mt-4 flex max-w-prose flex-col gap-4 text-muted">
+        <p>
+          Independent. Not ISC2. No unofficial item banks. I passed CISSP on
+          the first attempt after my mocks stalled. This Sunday, 4 October, I
+          run the same room so you do not fund the retake I almost bought.
+        </p>
+        <p>
+          Questions before you sit:{" "}
+          <a
+            href={`mailto:${HOST_EMAIL}`}
+            className="text-fg underline-offset-4 hover:underline"
+          >
+            {HOST_EMAIL}
+          </a>
+          . If you want dumps, leave. If you want the thinking switch, the stem
+          drill, and a 48-hour plan that fits a working week — sit with us.
+        </p>
       </div>
+      <ul className="mt-8 grid gap-3 text-sm sm:grid-cols-3">
+        <li className="rounded-lg bg-surface p-4 shadow-[var(--shadow-border)]">
+          <Clock3 className="size-4 text-accent" />
+          <p className="mt-3 font-medium">Sunday 4 Oct</p>
+          <p className="mt-1 text-muted">10:00–12:00 IST. Two live hours.</p>
+        </li>
+        <li className="rounded-lg bg-surface p-4 shadow-[var(--shadow-border)]">
+          <Shield className="size-4 text-accent" />
+          <p className="mt-3 font-medium">Independent</p>
+          <p className="mt-1 text-muted">Not affiliated with ISC2. No unofficial item banks.</p>
+        </li>
+        <li className="rounded-lg bg-surface p-4 shadow-[var(--shadow-border)]">
+          <Calendar className="size-4 text-accent" />
+          <p className="mt-3 font-medium">Live only</p>
+          <p className="mt-1 text-muted">No recording. Take notes. Miss it and this sitting is gone.</p>
+        </li>
+      </ul>
     </section>
   );
 }
@@ -627,12 +601,10 @@ function Stories() {
 function Price({
   onReserve,
   cta,
-  seats,
   sessionAt,
 }: {
   onReserve: () => void;
   cta: string;
-  seats: number;
   sessionAt: Date;
 }) {
   const { session, exam } = useMoney();
@@ -647,7 +619,7 @@ function Price({
           <p className="mt-4 max-w-prose text-muted">
             Bootcamps teach the book. This room teaches how the exam thinks. If you
             already have the hours, this is the cheapest insurance you can buy.
-            Live only — no recording.
+            Live only — no recording. Checkout is Dodo Payments.
           </p>
           <ul className="mt-8 flex flex-col gap-3">
             {failPatterns.map((line) => (
@@ -664,9 +636,7 @@ function Price({
             <p className="font-display mt-2 text-4xl font-medium tracking-tight">{session}</p>
             <p className="mt-2 text-sm text-muted">{formatSessionLong(sessionAt)}</p>
             <LocalTime date={sessionAt} />
-            <p className="mt-1 text-sm text-muted">
-              {seats} seats left of {SEATS_TOTAL}. No recording.
-            </p>
+            <p className="mt-1 text-sm text-muted">No recording. Pay on Dodo.</p>
             <div className="mt-4">
               <p className="mb-2 text-xs uppercase tracking-wider text-subtle">Pay in</p>
               <CurrencySelect />
@@ -679,7 +649,7 @@ function Price({
               <ArrowRight />
             </Button>
             <p className="text-center text-xs text-muted">
-              Join link from {HOST_EMAIL}.
+              Join link from {HOST_EMAIL} after payment.
             </p>
           </div>
         </aside>
@@ -717,12 +687,10 @@ function Faq() {
 
 function Close({
   sessionAt,
-  seats,
   onReserve,
   cta,
 }: {
   sessionAt: Date;
-  seats: number;
   onReserve: () => void;
   cta: string;
 }) {
@@ -737,8 +705,8 @@ function Close({
           Don’t be the engineer who knew the material and still sat it twice.
         </h2>
         <p className="mx-auto mt-5 max-w-lg text-paper-muted">
-          {formatSessionLong(sessionAt)}. {seats} seats. {session}. The CAT will
-          not give you a review screen. This room will.
+          {formatSessionLong(sessionAt)}. {session}. The CAT will not give you a
+          review screen. This room will.
         </p>
         <Button variant="paper" size="lg" className="mt-8" onClick={onReserve}>
           {cta}
@@ -810,12 +778,10 @@ function ShareLink() {
 
 function StickyBar({
   sessionAt,
-  seats,
   onReserve,
   enrolled,
 }: {
   sessionAt: Date;
-  seats: number;
   onReserve: () => void;
   enrolled: boolean;
 }) {
@@ -825,12 +791,12 @@ function StickyBar({
       <div className="flex items-center gap-3 px-4 py-3 pb-safe">
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-medium">
-            {enrolled ? "You’re reserved" : `${session} · ${seats} seats`}
+            {enrolled ? "You’re in" : `${session} · Dodo checkout`}
           </p>
           <p className="truncate text-xs text-muted">{formatSessionShort(sessionAt)} IST</p>
         </div>
         <Button size="sm" onClick={onReserve} className="shrink-0">
-          {enrolled ? "View seat" : "Reserve"}
+          {enrolled ? "View" : "Pay"}
           <ArrowRight />
         </Button>
       </div>
