@@ -18,7 +18,7 @@ import {
   enrollMailto,
   examWindows,
   readEnrollment,
-  SESSION_WHEN,
+  sessionWhen,
   writeEnrollment,
   type Enrollment,
   type ExamWindow,
@@ -88,7 +88,7 @@ export function EnrollDialog({ open, onOpenChange, onPaid }: Props) {
           <>
             <DialogHeader>
               <p className="text-kicker font-medium uppercase text-accent">Reserve a seat</p>
-              <DialogTitle>{session} · {SESSION_WHEN}</DialogTitle>
+              <DialogTitle>{session} · {sessionWhen()}</DialogTitle>
               <DialogDescription>
                 One price for this currency. This opens an email to {HOST_EMAIL}.
                 I reply with how to pay. The join link is sent after payment.

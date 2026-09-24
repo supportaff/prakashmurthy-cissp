@@ -3,8 +3,30 @@ import type { Currency } from "@/lib/currency";
 
 export const ENROLL_KEY = "prakash:enroll";
 
-/** One sitting. Shown so people can block it. Not a countdown. */
-export const SESSION_WHEN = "Sunday 4 October, 11:00–13:00 IST";
+/** Sunday 11 October 2026, 11:00 IST (05:30 UTC). */
+export function nextSessionStart(): Date {
+  return new Date(Date.UTC(2026, 9, 11, 5, 30, 0));
+}
+
+export function sessionWhen(): string {
+  const day = new Intl.DateTimeFormat("en-IN", {
+    timeZone: "Asia/Kolkata",
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  }).format(nextSessionStart());
+  return `${day}, 11:00–13:00 IST`;
+}
+
+export function sessionWhenShort(): string {
+  const day = new Intl.DateTimeFormat("en-IN", {
+    timeZone: "Asia/Kolkata",
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  }).format(nextSessionStart());
+  return `${day} · 11:00 IST`;
+}
 
 export type Enrollment = {
   name: string;
@@ -29,7 +51,7 @@ export function enrollMailto(enrollment: Enrollment): string {
   return mailtoHost(
     `CISSP seat — ${enrollment.name} — ${enrollment.price}`,
     [
-      `New seat for ${SESSION_WHEN}.`,
+      `New seat for ${sessionWhen()}.`,
       ``,
       `Name: ${enrollment.name}`,
       `Email: ${enrollment.email}`,
@@ -154,11 +176,11 @@ export function faqsFor(price: string) {
   return [
     {
       q: `${price} is suspiciously cheap. Is this a pitch for a long paid course?`,
-      a: `No. ${SESSION_WHEN}. One price, one room. No slide-deck upsell. If I ever run a longer cohort, it is a separate product with a separate page.`,
+      a: `No. ${sessionWhen()}. One price, one room. No slide-deck upsell. If I ever run a longer cohort, it is a separate product with a separate page.`,
     },
     {
       q: "How do I pay, and how do I join?",
-      a: `Send a seat request at the price you picked (₹199, $3.99, or €3.99). I reply from ${HOST_EMAIL} with how to pay. The join link goes out after payment, for ${SESSION_WHEN}.`,
+      a: `Send a seat request at the price you picked (₹199, $3.99, or €3.99). I reply from ${HOST_EMAIL} with how to pay. The join link goes out after payment, for ${sessionWhen()}.`,
     },
     {
       q: "Is this affiliated with ISC2?",
@@ -178,7 +200,7 @@ export function faqsFor(price: string) {
     },
     {
       q: "Do I get a recording?",
-      a: `No. ${SESSION_WHEN} is live only. Take notes. Miss it and there is no replay.`,
+      a: `No. ${sessionWhen()} is live only. Take notes. Miss it and there is no replay.`,
     },
     {
       q: "Where are the terms and privacy policy?",

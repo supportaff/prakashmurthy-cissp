@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { LegalLayout } from "@/components/legal/layout";
 import { HOST_EMAIL, HOST_NAME, SITE_HOST, SITE_URL } from "@/lib/brand";
-import { SESSION_WHEN } from "@/lib/session";
+import { sessionWhen } from "@/lib/session";
 
 export const Route = createFileRoute("/terms")({
   component: TermsPage,
@@ -35,7 +35,7 @@ function TermsPage() {
       <section>
         <h2>The session</h2>
         <p>
-          One live sitting, {SESSION_WHEN}. You receive how to pay by email
+          One live sitting, {sessionWhen()}. You receive how to pay by email
           after you reserve. The join link follows payment. The session is live
           only. There is no recording and no replay.
         </p>

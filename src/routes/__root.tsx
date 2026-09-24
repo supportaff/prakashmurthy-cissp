@@ -2,11 +2,10 @@ import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-r
 import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { Toaster } from "sonner";
+import { sessionWhen } from "@/lib/session";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "Prakashmurthy";
-const APP_DESCRIPTION =
-  "Sunday 4 October, 11:00–13:00 IST. Live 2-hour CISSP webinar with Prakashmurthy. ₹199 / $3.99 / €3.99. Live only, no recording.";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -14,7 +13,7 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: APP_NAME },
-      { name: "description", content: APP_DESCRIPTION },
+      { name: "description", content: `${sessionWhen()}. Live 2-hour CISSP webinar with Prakashmurthy. ₹199 / $3.99 / €3.99. Live only, no recording.` },
       { name: "theme-color", content: "#faf9f6" },
     ],
     links: [

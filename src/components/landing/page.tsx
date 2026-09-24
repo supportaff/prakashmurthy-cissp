@@ -29,7 +29,8 @@ import {
   faqsFor,
   outcomes,
   readEnrollment,
-  SESSION_WHEN,
+  sessionWhen,
+  sessionWhenShort,
   stories,
   walkOutWith,
   writeEnrollment,
@@ -113,7 +114,7 @@ function TopBar() {
   return (
     <div className="bg-elevated text-fg">
       <p className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-3 px-4 py-2 text-center text-xs text-muted sm:px-6">
-        <span className="text-fg">{SESSION_WHEN}</span>
+        <span className="text-fg">{sessionWhen()}</span>
         <span aria-hidden="true" className="text-border">
           ·
         </span>
@@ -185,7 +186,7 @@ function Hero({
     <section className="relative">
       <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 lg:px-8 lg:py-24">
         <p className="fs-enter text-kicker font-medium uppercase text-accent">
-          {SESSION_WHEN} · {session}
+          {sessionWhen()} · {session}
         </p>
         <h1
           className="fs-enter font-display mt-4 text-display font-medium tracking-tight"
@@ -218,7 +219,7 @@ function Hero({
         </div>
         <div className="fs-enter" style={{ animationDelay: "260ms" }}>
           <StemDrill onReserve={onReserve} cta={cta} />
-          <p className="mt-3 text-xs text-muted">{SESSION_WHEN} · live only · no recording</p>
+          <p className="mt-3 text-xs text-muted">{sessionWhen()} · live only · no recording</p>
         </div>
       </div>
     </section>
@@ -296,7 +297,7 @@ function Outcomes({ onReserve, cta }: { onReserve: () => void; cta: string }) {
           Two live hours. Six things you can use on exam day — not a slide dump.
         </h2>
         <p className="mt-4 max-w-xl text-paper-muted">
-          {SESSION_WHEN}. Cameras optional. Notes expected. No recording.
+          {sessionWhen()}. Cameras optional. Notes expected. No recording.
         </p>
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {outcomes.map((item, i) => (
@@ -402,7 +403,7 @@ function Agenda() {
         <div className="lg:col-span-5">
           <p className="text-kicker font-medium uppercase text-accent">Two hours, timed</p>
           <h2 className="font-display mt-3 text-3xl font-medium tracking-tight sm:text-4xl">
-            {SESSION_WHEN}. Not a webinar that wanders.
+            {sessionWhen()}. Not a webinar that wanders.
           </h2>
           <p className="mt-4 text-muted">
             Cameras optional. Notes expected. Bring one practice item you keep
@@ -467,7 +468,7 @@ function Host() {
       <ul className="mt-8 grid gap-3 text-sm sm:grid-cols-3">
         <li className="rounded-lg bg-surface p-4 shadow-[var(--shadow-border)]">
           <Clock3 className="size-4 text-accent" />
-          <p className="mt-3 font-medium">{SESSION_WHEN}</p>
+          <p className="mt-3 font-medium">{sessionWhen()}</p>
           <p className="mt-1 text-muted">Two hours. Block it. Live only.</p>
         </li>
         <li className="rounded-lg bg-surface p-4 shadow-[var(--shadow-border)]">
@@ -533,7 +534,7 @@ function Price({
           </h2>
           <p className="mt-4 max-w-prose text-muted">
             ₹199, $3.99, or €3.99 is the same seat. No early-bird, no coupon, no
-            dearer chat price. {SESSION_WHEN}. Live only — no recording. I reply
+            dearer chat price. {sessionWhen()}. Live only — no recording. I reply
             from {HOST_EMAIL} with how to pay. The join link follows payment.
           </p>
           <ul className="mt-8 flex flex-col gap-3">
@@ -547,7 +548,7 @@ function Price({
         </div>
         <aside className="flex flex-col justify-between gap-6 rounded-xl bg-bg p-6 shadow-[var(--shadow-border)] lg:col-span-5">
           <div>
-            <p className="text-xs uppercase tracking-wider text-subtle">{SESSION_WHEN}</p>
+            <p className="text-xs uppercase tracking-wider text-subtle">{sessionWhen()}</p>
             <p className="font-display mt-2 text-4xl font-medium tracking-tight">{session}</p>
             <p className="mt-2 text-sm text-muted">One seat. Against an exam of {exam}.</p>
             <div className="mt-4">
@@ -609,13 +610,13 @@ function Close({
     <section className="bg-paper text-paper-fg">
       <div className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 lg:py-28">
         <p className="text-kicker font-medium uppercase text-paper-muted">
-          {SESSION_WHEN} · {session}
+          {sessionWhen()} · {session}
         </p>
         <h2 className="font-display mt-4 text-3xl font-medium tracking-tight sm:text-5xl">
           Don’t be the engineer who knew the material and still sat it twice.
         </h2>
         <p className="mx-auto mt-5 max-w-lg text-paper-muted">
-          {SESSION_WHEN}. {session}. The CAT will not give you a review screen. This room will.
+          {sessionWhen()}. {session}. The CAT will not give you a review screen. This room will.
         </p>
         <Button variant="paper" size="lg" className="mt-8" onClick={onReserve}>
           {cta}
@@ -633,7 +634,7 @@ function Footer() {
         <div>
           <Mark />
           <p className="mt-3 max-w-md">
-            Independent CISSP first-attempt briefing by {HOST_NAME}. {SESSION_WHEN}.
+            Independent CISSP first-attempt briefing by {HOST_NAME}. {sessionWhen()}.
             Live only — no recording. Not affiliated with, endorsed by, or
             sponsored by ISC2. CISSP is a registered mark of ISC2, Inc.
           </p>
@@ -670,7 +671,7 @@ function ShareLink() {
     const url = window.location.href;
     const payload = {
       title: `${HOST_NAME} — CISSP first-attempt webinar`,
-      text: `${SESSION_WHEN}. Live, no recording. ${HOST_NAME}.`,
+      text: `${sessionWhen()}. Live, no recording. ${HOST_NAME}.`,
       url,
     };
     try {
@@ -711,7 +712,7 @@ function StickyBar({
           <p className="truncate text-sm font-medium">
             {enrolled ? "You’re in" : session}
           </p>
-          <p className="truncate text-xs text-muted">Sun 4 Oct · 11:00 IST</p>
+          <p className="truncate text-xs text-muted">{sessionWhenShort()}</p>
         </div>
         <Button size="sm" onClick={onReserve} className="shrink-0">
           {enrolled ? "View" : "Reserve"}

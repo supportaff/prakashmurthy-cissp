@@ -59,7 +59,7 @@ export function StemDrill({
           {hits} of {ITEMS.length}. Same facts. Different stem. Different answer.
         </p>
         <p className="mt-2 text-sm text-muted">
-          That switch is the hour. Sunday 4 October we do it on items you keep missing.
+          That switch is the hour. On 11 October we do it on items you keep missing.
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-4">
           {onReserve && cta ? (
