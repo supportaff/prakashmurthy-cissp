@@ -88,7 +88,7 @@ export function sessionIcs(date: Date, name: string, price: string): string {
     `DTEND:${end}`,
     `ORGANIZER;CN=${HOST_NAME}:MAILTO:${HOST_EMAIL}`,
     `SUMMARY:${HOST_NAME} — CISSP first-attempt webinar`,
-    `DESCRIPTION:Live 2-hour CISSP first-attempt session with ${HOST_NAME} for ${name}. Paid ${price} via Dodo. Join link from ${HOST_EMAIL}. No recording.`,
+    `DESCRIPTION:Live 2-hour CISSP first-attempt session with ${HOST_NAME} for ${name}. Seat ${price}. Join link from ${HOST_EMAIL}. No recording.`,
     "LOCATION:Live online",
     `URL:${SITE_URL}`,
     "END:VEVENT",
@@ -105,7 +105,7 @@ export function enrollMailto(enrollment: Enrollment): string {
       ``,
       `Name: ${enrollment.name}`,
       `Email: ${enrollment.email}`,
-      `Paid via Dodo: ${enrollment.price} (${enrollment.currency})`,
+      `Seat requested: ${enrollment.price} (${enrollment.currency})`,
       `Exam window: ${windowLabel}`,
       ``,
       `Please send the join link to ${enrollment.email}.`,
@@ -230,7 +230,7 @@ export function faqsFor(price: string) {
     },
     {
       q: "How do I pay, and how do I join?",
-      a: `Pick ₹, $, or €, then pay on Dodo Payments. After checkout the join link is emailed to you from ${HOST_EMAIL}.`,
+      a: `Pick ₹, $, or €, then send a seat request. I reply from ${HOST_EMAIL} with how to pay and the join link.`,
     },
     {
       q: "Is this affiliated with ISC2?",
@@ -254,7 +254,7 @@ export function faqsFor(price: string) {
     },
     {
       q: "Where are the terms and privacy policy?",
-      a: "Footer of this site — Terms and Privacy. Paying on Dodo means you agree to both.",
+      a: "Footer of this site — Terms and Privacy. Reserving a seat means you agree to both.",
     },
     {
       q: "What about the 5-year experience rule?",

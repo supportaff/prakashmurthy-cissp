@@ -50,8 +50,9 @@ function TermsPage() {
         <h2>Price and payment</h2>
         <p>
           The seat is ₹199, $3.99, or €3.99 depending on the currency you
-          choose at checkout. Payment is taken by Dodo Payments. A paid seat is
-          a licence to attend that live sitting, not a course subscription.
+          choose. You request the seat by email. {HOST_NAME} replies from{" "}
+          {HOST_EMAIL} with how to pay and the join link. A paid seat is a
+          licence to attend that live sitting, not a course subscription.
         </p>
       </section>
 

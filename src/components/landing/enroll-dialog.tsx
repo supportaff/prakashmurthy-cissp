@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { CalendarPlus, Check, Mail } from "lucide-react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,7 +13,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { CurrencySelect, useMoney } from "@/components/landing/currency";
-import { startCheckout } from "@/lib/checkout";
 import { HOST_EMAIL, HOST_NAME } from "@/lib/brand";
 import {
   enrollMailto,
@@ -44,7 +42,6 @@ export function EnrollDialog({ open, onOpenChange, sessionAt, onPaid }: Props) {
   const [email, setEmail] = useState("");
   const [windowId, setWindowId] = useState<ExamWindow>("8w");
   const [error, setError] = useState<string | null>(null);
-  const [pending, setPending] = useState(false);
   const [done, setDone] = useState<Enrollment | null>(null);
 
   useEffect(() => {
@@ -68,45 +65,32 @@ export function EnrollDialog({ open, onOpenChange, sessionAt, onPaid }: Props) {
     URL.revokeObjectURL(url);
   }
 
-  async function submit(e: FormEvent) {
+  function submit(e: FormEvent) {
     e.preventDefault();
     setError(null);
     const trimmed = name.trim();
     const mail = email.trim().toLowerCase();
     if (trimmed.length < 2) {
-      setError("Put the name you want on the receipt.");
+      setError("Put the name you want on the reply.");
       return;
     }
     if (!isEmail(mail)) {
       setError("That email does not look usable for the join link.");
       return;
     }
-    setPending(true);
     const enrollment: Enrollment = {
       name: trimmed,
       email: mail,
       window: windowId,
       currency,
       price: session,
-      paid: false,
+      paid: true,
       at: new Date().toISOString(),
     };
     writeEnrollment(enrollment);
-    try {
-      const result = await startCheckout({
-        data: { name: trimmed, email: mail, currency, window: windowId },
-      });
-      if (!result.ok) {
-        setError(result.error);
-        setPending(false);
-        return;
-      }
-      toast("Opening Dodo checkout…");
-      window.location.href = result.checkoutUrl;
-    } catch {
-      setError("Could not start Dodo checkout. Try again.");
-      setPending(false);
-    }
+    setDone(enrollment);
+    onPaid(enrollment);
+    window.location.href = enrollMailto(enrollment);
   }
 
   return (
@@ -117,19 +101,19 @@ export function EnrollDialog({ open, onOpenChange, sessionAt, onPaid }: Props) {
         ) : (
           <>
             <DialogHeader>
-              <p className="text-kicker font-medium uppercase text-accent">Pay on Dodo</p>
+              <p className="text-kicker font-medium uppercase text-accent">Reserve a seat</p>
               <DialogTitle>Sunday 4 Oct · {session}</DialogTitle>
               <DialogDescription>
-                {formatSessionLong(sessionAt)}. Pick ₹, $, or € — Dodo takes the
-                payment. The join link is emailed from {HOST_EMAIL} as soon as
-                Dodo confirms the charge. Live only, no recording.
+                {formatSessionLong(sessionAt)}. Pick ₹, $, or €. This opens an
+                email to {HOST_EMAIL}. I reply with how to pay and the join
+                link. Live only, no recording.
               </DialogDescription>
             </DialogHeader>
             <div>
               <p className="mb-2 text-xs uppercase tracking-wider text-subtle">Pay in</p>
               <CurrencySelect />
             </div>
-            <form onSubmit={(ev) => void submit(ev)} className="flex flex-col gap-4">
+            <form onSubmit={submit} className="flex flex-col gap-4">
               <Field label="Full name" htmlFor="fs-name">
                 <Input
                   id="fs-name"
@@ -182,11 +166,11 @@ export function EnrollDialog({ open, onOpenChange, sessionAt, onPaid }: Props) {
                   {error}
                 </p>
               ) : null}
-              <Button type="submit" size="lg" disabled={pending} className="w-full">
-                {pending ? "Opening Dodo…" : `Pay · ${session}`}
+              <Button type="submit" size="lg" className="w-full">
+                Email my seat · {session}
               </Button>
               <p className="text-center text-xs text-muted">
-                By paying you agree to the{" "}
+                By reserving you agree to the{" "}
                 <Link to="/terms" className="text-fg underline underline-offset-4">
                   Terms
                 </Link>{" "}
@@ -194,7 +178,7 @@ export function EnrollDialog({ open, onOpenChange, sessionAt, onPaid }: Props) {
                 <Link to="/privacy" className="text-fg underline underline-offset-4">
                   Privacy policy
                 </Link>
-                . Checkout on Dodo. Live only — no recording.
+                . Live only — no recording.
               </p>
             </form>
           </>
@@ -238,8 +222,8 @@ function Success({
         </span>
         <DialogTitle>You’re in, {enrollment.name.split(" ")[0]}.</DialogTitle>
         <DialogDescription>
-          {enrollment.price} received. I’ll send the join link for{" "}
-          {formatSessionLong(sessionAt)} to {enrollment.email} from {HOST_EMAIL}.
+          Seat request for {formatSessionLong(sessionAt)} goes to {HOST_EMAIL}.
+          Finish the email that opened, then watch {enrollment.email}.
         </DialogDescription>
       </DialogHeader>
       <ol className="flex flex-col gap-3 text-sm">

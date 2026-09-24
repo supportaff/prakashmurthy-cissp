@@ -32,14 +32,10 @@ function PrivacyPage() {
         <ul className="list-disc pl-5">
           <li>Name and email you type on this site.</li>
           <li>Exam window you select (how soon you sit).</li>
-          <li>Currency you pay in (₹, $, or €).</li>
+          <li>Currency you choose (₹, $, or €).</li>
           <li>
-            Payment status and receipt data held by Dodo Payments when you
-            check out.
-          </li>
-          <li>
-            Currency choice and a local “you’re in” flag in your browser
-            (localStorage). Not a tracking cookie.
+            A local “you’re in” flag in your browser (localStorage). Not a
+            tracking cookie.
           </li>
         </ul>
         <p className="mt-3">
@@ -51,10 +47,9 @@ function PrivacyPage() {
       <section>
         <h2>Why</h2>
         <p>
-          To take payment, issue a receipt, email the join link from{" "}
-          {HOST_EMAIL} as soon as Dodo confirms the charge, and answer support
-          mail. We do not sell lists, run ads on this data, or train models on
-          it.
+          To hold your seat request and reply from {HOST_EMAIL} with how to
+          pay and the join link. We do not sell lists, run ads on this data, or
+          train models on it.
         </p>
       </section>
 
@@ -62,8 +57,7 @@ function PrivacyPage() {
         <h2>Who else sees it</h2>
         <ul className="list-disc pl-5">
           <li>
-            Dodo Payments — checkout, card or UPI processing, invoices. Their
-            own terms apply at checkout.
+            Your mail app, when you send the seat request to {HOST_EMAIL}.
           </li>
           <li>
             Vercel — hosts this site. Request logs may include IP and user
@@ -91,8 +85,7 @@ function PrivacyPage() {
         <p>
           Email {HOST_EMAIL} to see, correct, or delete the name and email we
           hold for you. If you are in the EU/UK you can also object or ask for
-          a copy. Payment records sit with Dodo; we will point you there when
-          the request is about a charge.
+          a copy.
         </p>
       </section>
 

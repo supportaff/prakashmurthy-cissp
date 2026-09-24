@@ -19,7 +19,8 @@ import {
 } from "@/components/ui/accordion";
 import { EnrollDialog } from "@/components/landing/enroll-dialog";
 import { CurrencyProvider, CurrencySelect, useMoney } from "@/components/landing/currency";
-import { LocalTime, SessionClock } from "@/components/landing/countdown";
+import { LocalTime } from "@/components/landing/countdown";
+import { StemDrill } from "@/components/landing/stem-drill";
 import { EXAM_USD, USD_INR } from "@/lib/currency";
 import { HOST_EMAIL, HOST_NAME, SITE_HOST } from "@/lib/brand";
 import {
@@ -73,7 +74,7 @@ function LandingInner() {
     setOpen(true);
   }
 
-  const cta = enrollment?.paid ? "You’re in" : `Pay · ${session}`;
+  const cta = enrollment?.paid ? "You’re in" : `Reserve · ${session}`;
 
   return (
     <div className="bg-bg text-fg">
@@ -227,9 +228,8 @@ function Hero({
             See exactly what you get
           </a>
         </div>
-        <div className="fs-enter mt-10" style={{ animationDelay: "260ms" }}>
-          <p className="mb-3 text-xs uppercase tracking-wider text-subtle">Goes live in</p>
-          <SessionClock target={sessionAt} size="hero" />
+        <div className="fs-enter" style={{ animationDelay: "260ms" }}>
+          <StemDrill />
           <p className="mt-3 text-xs text-muted">
             {formatSessionLong(sessionAt)} · live only · no recording
           </p>
@@ -607,7 +607,7 @@ function Price({
           <p className="mt-4 max-w-prose text-muted">
             Bootcamps teach the book. This room teaches how the exam thinks. If you
             already have the hours, this is the cheapest insurance you can buy.
-            Live only — no recording. Checkout is Dodo Payments.
+            Live only — no recording. Reserve by email. I reply with how to pay and the join link.
           </p>
           <ul className="mt-8 flex flex-col gap-3">
             {failPatterns.map((line) => (
@@ -624,20 +624,19 @@ function Price({
             <p className="font-display mt-2 text-4xl font-medium tracking-tight">{session}</p>
             <p className="mt-2 text-sm text-muted">{formatSessionLong(sessionAt)}</p>
             <LocalTime date={sessionAt} />
-            <p className="mt-1 text-sm text-muted">No recording. Pay on Dodo.</p>
+            <p className="mt-1 text-sm text-muted">No recording. Seat by email.</p>
             <div className="mt-4">
               <p className="mb-2 text-xs uppercase tracking-wider text-subtle">Pay in</p>
               <CurrencySelect />
             </div>
           </div>
-          <SessionClock target={sessionAt} />
           <div className="flex flex-col gap-3">
             <Button size="lg" onClick={onReserve} className="w-full">
               {cta}
               <ArrowRight />
             </Button>
             <p className="text-center text-xs text-muted">
-              Join link from {HOST_EMAIL} after payment.
+              Join link from {HOST_EMAIL} after you reserve.
             </p>
           </div>
         </aside>
@@ -790,12 +789,12 @@ function StickyBar({
       <div className="flex items-center gap-3 px-4 py-3 pb-safe">
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-medium">
-            {enrolled ? "You’re in" : `${session} · Dodo checkout`}
+            {enrolled ? "You’re in" : `${session} · Sunday 4 Oct`}
           </p>
           <p className="truncate text-xs text-muted">{formatSessionShort(sessionAt)} IST</p>
         </div>
         <Button size="sm" onClick={onReserve} className="shrink-0">
-          {enrolled ? "View" : "Pay"}
+          {enrolled ? "View" : "Reserve"}
           <ArrowRight />
         </Button>
       </div>
