@@ -711,7 +711,7 @@ function StickyBar({
           <p className="truncate text-sm font-medium">
             {enrolled ? "You’re in" : session}
           </p>
-          <p className="truncate text-xs text-muted">Sun 4 Oct · 10:00 IST</p>
+          <p className="truncate text-xs text-muted">Sun 4 Oct · 11:00 IST</p>
         </div>
         <Button size="sm" onClick={onReserve} className="shrink-0">
           {enrolled ? "View" : "Reserve"}

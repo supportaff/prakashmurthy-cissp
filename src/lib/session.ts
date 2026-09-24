@@ -4,7 +4,7 @@ import type { Currency } from "@/lib/currency";
 export const ENROLL_KEY = "prakash:enroll";
 
 /** One sitting. Shown so people can block it. Not a countdown. */
-export const SESSION_WHEN = "Sunday 4 October, 10:00–12:00 IST";
+export const SESSION_WHEN = "Sunday 4 October, 11:00–13:00 IST";
 
 export type Enrollment = {
   name: string;
