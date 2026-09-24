@@ -138,6 +138,27 @@
   animation: fs-rise 500ms var(--ease-smooth-out) both;
 }
 
+@keyframes present-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.present-stage,
+.present-item,
+.present-notes {
+  animation: present-rise 640ms var(--ease-smooth-out) both;
+}
+
+.present-notes {
+  animation-duration: 360ms;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .fs-enter {
     animation: none;

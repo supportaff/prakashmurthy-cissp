@@ -650,6 +650,9 @@ function Footer() {
             >
               Privacy
             </Link>
+            <Link to="/present" className="text-fg transition-colors duration-150 hover:text-accent">
+              Room
+            </Link>
           </div>
           <a
             href={`mailto:${HOST_EMAIL}`}
