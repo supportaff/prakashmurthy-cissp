@@ -25,13 +25,12 @@ import { HOST_EMAIL, HOST_NAME, SITE_HOST } from "@/lib/brand";
 import {
   agenda,
   attemptBeats,
-  domains,
   failPatterns,
   faqsFor,
   outcomes,
   readEnrollment,
+  SESSION_WHEN,
   stories,
-  tipsPreview,
   walkOutWith,
   writeEnrollment,
   type Enrollment,
@@ -83,13 +82,11 @@ function LandingInner() {
       <Header onReserve={reserve} cta={cta} />
       <main id="main" className="pb-24 lg:pb-0">
         <Hero onReserve={reserve} cta={cta} />
-        <CostOfFail />
-        <Attempt />
+        <CostOfFail onReserve={reserve} cta={cta} />
         <Outcomes onReserve={reserve} cta={cta} />
+        <Attempt />
         <Audience onReserve={reserve} cta={cta} />
-        <Tips />
         <Agenda />
-        <Domains />
         <Host />
         <Stories />
         <Price onReserve={reserve} cta={cta} />
@@ -116,7 +113,11 @@ function TopBar() {
   return (
     <div className="bg-elevated text-fg">
       <p className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-3 px-4 py-2 text-center text-xs text-muted sm:px-6">
-        <span className="text-fg">Live only · no recording</span>
+        <span className="text-fg">{SESSION_WHEN}</span>
+        <span aria-hidden="true" className="text-border">
+          ·
+        </span>
+        <span>Live only · no recording</span>
         <span aria-hidden="true" className="hidden text-border sm:inline">
           ·
         </span>
@@ -184,7 +185,7 @@ function Hero({
     <section className="relative">
       <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 lg:px-8 lg:py-24">
         <p className="fs-enter text-kicker font-medium uppercase text-accent">
-          Live webinar · two hours · {session}
+          {SESSION_WHEN} · {session}
         </p>
         <h1
           className="fs-enter font-display mt-4 text-display font-medium tracking-tight"
@@ -216,15 +217,15 @@ function Hero({
           </a>
         </div>
         <div className="fs-enter" style={{ animationDelay: "260ms" }}>
-          <StemDrill />
-          <p className="mt-3 text-xs text-muted">Live only · no recording</p>
+          <StemDrill onReserve={onReserve} cta={cta} />
+          <p className="mt-3 text-xs text-muted">{SESSION_WHEN} · live only · no recording</p>
         </div>
       </div>
     </section>
   );
 }
 
-function CostOfFail() {
+function CostOfFail({ onReserve, cta }: { onReserve: () => void; cta: string }) {
   const { session, exam, currency } = useMoney();
   const examNote =
     currency === "INR"
@@ -235,7 +236,16 @@ function CostOfFail() {
       <div className="mx-auto grid max-w-6xl gap-0 px-0 sm:grid-cols-3">
         <CostCell k="CISSP exam" v={exam} d={examNote} />
         <CostCell k="A retake" v={`+${exam}`} d="Plus 30 days you cannot sit. The expensive lesson." />
-        <CostCell k="This webinar" v={session} d="Two hours. The thinking that got me through once." />
+        <CostCell k="This webinar" v={session} d="Same room in every currency. One price. No second tier." />
+      </div>
+      <div className="mx-auto flex max-w-6xl flex-col items-start gap-3 px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-muted">
+          The exam fee is the number that matters. {session} is the hedge against paying it twice.
+        </p>
+        <Button onClick={onReserve}>
+          {cta}
+          <ArrowRight />
+        </Button>
       </div>
     </section>
   );
@@ -286,8 +296,7 @@ function Outcomes({ onReserve, cta }: { onReserve: () => void; cta: string }) {
           Two live hours. Six things you can use on exam day — not a slide dump.
         </h2>
         <p className="mt-4 max-w-xl text-paper-muted">
-          Two live hours. Cameras optional. Notes expected.
-          No recording. Bring one practice item you keep missing.
+          {SESSION_WHEN}. Cameras optional. Notes expected. No recording.
         </p>
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {outcomes.map((item, i) => (
@@ -386,32 +395,6 @@ function AudienceCard({ title, items }: { title: string; items: string[] }) {
   );
 }
 
-function Tips() {
-  return (
-    <section id="tips" className="border-y border-border">
-      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-        <p className="text-kicker font-medium uppercase text-accent">A preview. The rest is live.</p>
-        <h2 className="font-display mt-3 max-w-2xl text-3xl font-medium tracking-tight sm:text-4xl">
-          Three habits that separate first-attempt passes from expensive almosts.
-        </h2>
-        <p className="mt-4 max-w-xl text-muted">
-          These are the ones we can print. The stem drill, the ethics tie-break, and
-          the 48-hour cut list stay in the room — so they stay sharp.
-        </p>
-        <div className="mt-12 grid gap-10 lg:grid-cols-3">
-          {tipsPreview.map((tip) => (
-            <article key={tip.k} className="flex flex-col gap-3">
-              <span className="font-mono text-xs text-accent">{tip.k}</span>
-              <h3 className="font-display text-2xl font-medium tracking-tight">{tip.title}</h3>
-              <p className="text-sm text-muted">{tip.body}</p>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function Agenda() {
   return (
     <section id="plan" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
@@ -419,7 +402,7 @@ function Agenda() {
         <div className="lg:col-span-5">
           <p className="text-kicker font-medium uppercase text-accent">Two hours, timed</p>
           <h2 className="font-display mt-3 text-3xl font-medium tracking-tight sm:text-4xl">
-            Two hours, on the material. Not a webinar that wanders.
+            {SESSION_WHEN}. Not a webinar that wanders.
           </h2>
           <p className="mt-4 text-muted">
             Cameras optional. Notes expected. Bring one practice item you keep
@@ -456,44 +439,6 @@ function Agenda() {
   );
 }
 
-function Domains() {
-  return (
-    <section className="bg-paper text-paper-fg">
-      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-        <p className="text-kicker font-medium uppercase text-paper-muted">
-          Eight domains · current weighting
-        </p>
-        <h2 className="font-display mt-3 max-w-2xl text-3xl font-medium tracking-tight sm:text-4xl">
-          First-timers don’t fail evenly. We spend the hour where the CAT spends the items.
-        </h2>
-        <div className="mt-12 grid gap-3 sm:grid-cols-2">
-          {domains.map((d) => (
-            <article
-              key={d.n}
-              className="flex flex-col gap-3 rounded-xl bg-paper p-5 shadow-[var(--shadow-paper)]"
-            >
-              <div className="flex items-baseline justify-between gap-3">
-                <h3 className="text-sm font-medium">
-                  <span className="mr-2 font-mono text-xs text-paper-muted">{d.n} </span>
-                  {d.name}
-                </h3>
-                <span className="font-mono text-xs tabular-nums text-paper-muted">{d.weight}%</span>
-              </div>
-              <div className="h-1 rounded-full bg-paper-line">
-                <div
-                  className="h-1 rounded-full bg-paper-fg"
-                  style={{ width: `${(d.weight / 16) * 100}%` }}
-                />
-              </div>
-              <p className="text-sm text-paper-muted">{d.trap}</p>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function Host() {
   return (
     <section id="host" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
@@ -522,8 +467,8 @@ function Host() {
       <ul className="mt-8 grid gap-3 text-sm sm:grid-cols-3">
         <li className="rounded-lg bg-surface p-4 shadow-[var(--shadow-border)]">
           <Clock3 className="size-4 text-accent" />
-          <p className="mt-3 font-medium">Two live hours</p>
-          <p className="mt-1 text-muted">Cameras optional. Notes expected.</p>
+          <p className="mt-3 font-medium">{SESSION_WHEN}</p>
+          <p className="mt-1 text-muted">Two hours. Block it. Live only.</p>
         </li>
         <li className="rounded-lg bg-surface p-4 shadow-[var(--shadow-border)]">
           <Shield className="size-4 text-accent" />
@@ -582,14 +527,14 @@ function Price({
     <section id="reserve" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
       <div className="grid gap-10 rounded-2xl bg-surface p-6 shadow-[var(--shadow-border)] sm:p-10 lg:grid-cols-12">
         <div className="lg:col-span-7">
-          <p className="text-kicker font-medium uppercase text-accent">Pay in ₹, $, or €</p>
+          <p className="text-kicker font-medium uppercase text-accent">One price</p>
           <h2 className="font-display mt-3 text-3xl font-medium tracking-tight sm:text-4xl">
-            {session} to not spend {exam} twice.
+            {session}. Not {exam} twice.
           </h2>
           <p className="mt-4 max-w-prose text-muted">
-            Bootcamps teach the book. This room teaches how the exam thinks. If you
-            already have the hours, this is the cheapest insurance you can buy.
-            Live only — no recording. Reserve by email. I reply with how to pay and the join link.
+            ₹199, $3.99, or €3.99 is the same seat. No early-bird, no coupon, no
+            dearer chat price. {SESSION_WHEN}. Live only — no recording. I reply
+            from {HOST_EMAIL} with how to pay. The join link follows payment.
           </p>
           <ul className="mt-8 flex flex-col gap-3">
             {failPatterns.map((line) => (
@@ -602,9 +547,9 @@ function Price({
         </div>
         <aside className="flex flex-col justify-between gap-6 rounded-xl bg-bg p-6 shadow-[var(--shadow-border)] lg:col-span-5">
           <div>
-            <p className="text-xs uppercase tracking-wider text-subtle">Live · no recording</p>
+            <p className="text-xs uppercase tracking-wider text-subtle">{SESSION_WHEN}</p>
             <p className="font-display mt-2 text-4xl font-medium tracking-tight">{session}</p>
-            <p className="mt-2 text-sm text-muted">Two hours. Seat by email.</p>
+            <p className="mt-2 text-sm text-muted">One seat. Against an exam of {exam}.</p>
             <div className="mt-4">
               <p className="mb-2 text-xs uppercase tracking-wider text-subtle">Pay in</p>
               <CurrencySelect />
@@ -616,7 +561,7 @@ function Price({
               <ArrowRight />
             </Button>
             <p className="text-center text-xs text-muted">
-              Join link from {HOST_EMAIL} after you reserve.
+              Pay after you reserve. Join link only once payment lands.
             </p>
           </div>
         </aside>
@@ -664,13 +609,13 @@ function Close({
     <section className="bg-paper text-paper-fg">
       <div className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 lg:py-28">
         <p className="text-kicker font-medium uppercase text-paper-muted">
-          Two live hours · {session}
+          {SESSION_WHEN} · {session}
         </p>
         <h2 className="font-display mt-4 text-3xl font-medium tracking-tight sm:text-5xl">
           Don’t be the engineer who knew the material and still sat it twice.
         </h2>
         <p className="mx-auto mt-5 max-w-lg text-paper-muted">
-          {session}. The CAT will not give you a review screen. This room will.
+          {SESSION_WHEN}. {session}. The CAT will not give you a review screen. This room will.
         </p>
         <Button variant="paper" size="lg" className="mt-8" onClick={onReserve}>
           {cta}
@@ -688,9 +633,9 @@ function Footer() {
         <div>
           <Mark />
           <p className="mt-3 max-w-md">
-            Independent CISSP first-attempt briefing by {HOST_NAME}. Two live
-            hours. No recording. Not affiliated with, endorsed by, or sponsored
-            by ISC2. CISSP is a registered mark of ISC2, Inc.
+            Independent CISSP first-attempt briefing by {HOST_NAME}. {SESSION_WHEN}.
+            Live only — no recording. Not affiliated with, endorsed by, or
+            sponsored by ISC2. CISSP is a registered mark of ISC2, Inc.
           </p>
         </div>
         <div className="flex flex-col gap-2 sm:items-end">
@@ -725,7 +670,7 @@ function ShareLink() {
     const url = window.location.href;
     const payload = {
       title: `${HOST_NAME} — CISSP first-attempt webinar`,
-      text: "Live CISSP first-attempt briefing. No recording.",
+      text: `${SESSION_WHEN}. Live, no recording. ${HOST_NAME}.`,
       url,
     };
     try {
@@ -764,9 +709,9 @@ function StickyBar({
       <div className="flex items-center gap-3 px-4 py-3 pb-safe">
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-medium">
-            {enrolled ? "You’re in" : `${session} · two live hours`}
+            {enrolled ? "You’re in" : session}
           </p>
-          <p className="truncate text-xs text-muted">No recording</p>
+          <p className="truncate text-xs text-muted">Sun 4 Oct · 10:00 IST</p>
         </div>
         <Button size="sm" onClick={onReserve} className="shrink-0">
           {enrolled ? "View" : "Reserve"}

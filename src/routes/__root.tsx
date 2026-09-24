@@ -6,7 +6,7 @@ import appCss from "../styles.css?url";
 
 const APP_NAME = "Prakashmurthy";
 const APP_DESCRIPTION =
-  "Live 2-hour CISSP webinar with Prakashmurthy. How I passed on the first attempt. ₹199 / $3.99 / €3.99. Live only, no recording. connect@prakashmurthy.com";
+  "Sunday 4 October, 10:00–12:00 IST. Live 2-hour CISSP webinar with Prakashmurthy. ₹199 / $3.99 / €3.99. Live only, no recording.";
 
 export const Route = createRootRoute({
   head: () => ({

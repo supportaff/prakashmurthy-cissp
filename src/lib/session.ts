@@ -3,6 +3,9 @@ import type { Currency } from "@/lib/currency";
 
 export const ENROLL_KEY = "prakash:enroll";
 
+/** One sitting. Shown so people can block it. Not a countdown. */
+export const SESSION_WHEN = "Sunday 4 October, 10:00–12:00 IST";
+
 export type Enrollment = {
   name: string;
   email: string;
@@ -26,7 +29,7 @@ export function enrollMailto(enrollment: Enrollment): string {
   return mailtoHost(
     `CISSP seat — ${enrollment.name} — ${enrollment.price}`,
     [
-      `New seat for the live CISSP briefing.`,
+      `New seat for ${SESSION_WHEN}.`,
       ``,
       `Name: ${enrollment.name}`,
       `Email: ${enrollment.email}`,
@@ -151,11 +154,11 @@ export function faqsFor(price: string) {
   return [
     {
       q: `${price} is suspiciously cheap. Is this a pitch for a long paid course?`,
-      a: "No. Two live hours. Tips and tricks from a first-attempt pass. No slide-deck upsell, no 'stay for the masterclass'. If I ever run a longer cohort, it is a separate product with a separate page.",
+      a: `No. ${SESSION_WHEN}. One price, one room. No slide-deck upsell. If I ever run a longer cohort, it is a separate product with a separate page.`,
     },
     {
       q: "How do I pay, and how do I join?",
-      a: `Pick ₹, $, or €, then send a seat request. I reply from ${HOST_EMAIL} with how to pay and the join link.`,
+      a: `Send a seat request at the price you picked (₹199, $3.99, or €3.99). I reply from ${HOST_EMAIL} with how to pay. The join link goes out after payment, for ${SESSION_WHEN}.`,
     },
     {
       q: "Is this affiliated with ISC2?",
@@ -175,7 +178,7 @@ export function faqsFor(price: string) {
     },
     {
       q: "Do I get a recording?",
-      a: "No. This session is live only. Take notes. If you miss the sitting, there is no replay.",
+      a: `No. ${SESSION_WHEN} is live only. Take notes. Miss it and there is no replay.`,
     },
     {
       q: "Where are the terms and privacy policy?",

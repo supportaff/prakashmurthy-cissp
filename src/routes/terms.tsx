@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { LegalLayout } from "@/components/legal/layout";
 import { HOST_EMAIL, HOST_NAME, SITE_HOST, SITE_URL } from "@/lib/brand";
+import { SESSION_WHEN } from "@/lib/session";
 
 export const Route = createFileRoute("/terms")({
   component: TermsPage,
@@ -34,9 +35,9 @@ function TermsPage() {
       <section>
         <h2>The session</h2>
         <p>
-          One live online sitting of two hours. You receive a join link by email
-          after you reserve. The session is live only. There is no recording and
-          no replay.
+          One live sitting, {SESSION_WHEN}. You receive how to pay by email
+          after you reserve. The join link follows payment. The session is live
+          only. There is no recording and no replay.
         </p>
         <p className="mt-3">
           The briefing covers how {HOST_NAME} passed CISSP on a first attempt:

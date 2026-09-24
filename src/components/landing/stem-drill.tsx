@@ -37,7 +37,13 @@ const ITEMS = [
   },
 ] as const;
 
-export function StemDrill() {
+export function StemDrill({
+  onReserve,
+  cta,
+}: {
+  onReserve?: () => void;
+  cta?: string;
+}) {
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
   const [hits, setHits] = useState(0);
@@ -53,19 +59,30 @@ export function StemDrill() {
           {hits} of {ITEMS.length}. Same facts. Different stem. Different answer.
         </p>
         <p className="mt-2 text-sm text-muted">
-          That switch is the hour. In the room we do it on items you keep missing.
+          That switch is the hour. Sunday 4 October we do it on items you keep missing.
         </p>
-        <button
-          type="button"
-          onClick={() => {
-            setIndex(0);
-            setPicked(null);
-            setHits(0);
-          }}
-          className="mt-4 text-sm text-fg underline underline-offset-4"
-        >
-          Run it again
-        </button>
+        <div className="mt-4 flex flex-wrap items-center gap-4">
+          {onReserve && cta ? (
+            <button
+              type="button"
+              onClick={onReserve}
+              className="h-11 rounded-md bg-fg px-4 text-sm font-medium text-bg"
+            >
+              {cta}
+            </button>
+          ) : null}
+          <button
+            type="button"
+            onClick={() => {
+              setIndex(0);
+              setPicked(null);
+              setHits(0);
+            }}
+            className="text-sm text-fg underline underline-offset-4"
+          >
+            Run it again
+          </button>
+        </div>
       </div>
     );
   }
