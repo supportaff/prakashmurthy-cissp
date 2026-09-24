@@ -17,7 +17,7 @@ export const Route = createFileRoute("/terms")({
 
 function TermsPage() {
   return (
-    <LegalLayout title="Terms of service" updated="22 September 2026">
+    <LegalLayout title="Terms of service">
       <section>
         <h2>Who this is</h2>
         <p>
@@ -34,9 +34,9 @@ function TermsPage() {
       <section>
         <h2>The session</h2>
         <p>
-          One live online sitting on Sunday 4 October 2026, 10:00–12:00 IST. You
-          receive a join link by email after payment. The session is live only.
-          There is no recording, no substitute date, and no replay.
+          One live online sitting of two hours. You receive a join link by email
+          after you reserve. The session is live only. There is no recording and
+          no replay.
         </p>
         <p className="mt-3">
           The briefing covers how {HOST_NAME} passed CISSP on a first attempt:
@@ -60,7 +60,7 @@ function TermsPage() {
         <h2>What you must not expect</h2>
         <ul className="list-disc pl-5">
           <li>A guaranteed pass. The exam is yours. This is a method briefing.</li>
-          <li>A recording if you miss Sunday 4 October.</li>
+          <li>A recording if you miss the sitting.</li>
           <li>Official ISC2 materials, dumps, or “real questions”.</li>
           <li>An upsell on the call. This product is the two hours.</li>
         </ul>
@@ -89,7 +89,7 @@ function TermsPage() {
         <h2>If something fails</h2>
         <p>
           If the host cannot run the sitting (illness, platform outage), you
-          will be offered the next live date or the fee back, at the host’s
+          will be offered another live sitting or the fee back, at the host’s
           choice. If you do not attend a sitting that ran as advertised, the
           seat is used. Exam outcomes, employer decisions, and ISC2 results are
           outside this agreement.

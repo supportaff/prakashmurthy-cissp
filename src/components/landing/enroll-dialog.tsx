@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
-import { CalendarPlus, Check, Mail } from "lucide-react";
+import { Check, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,9 +17,7 @@ import { HOST_EMAIL, HOST_NAME } from "@/lib/brand";
 import {
   enrollMailto,
   examWindows,
-  formatSessionLong,
   readEnrollment,
-  sessionIcs,
   writeEnrollment,
   type Enrollment,
   type ExamWindow,
@@ -28,7 +26,6 @@ import {
 type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  sessionAt: Date;
   onPaid: (enrollment: Enrollment) => void;
 };
 
@@ -36,7 +33,7 @@ function isEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
-export function EnrollDialog({ open, onOpenChange, sessionAt, onPaid }: Props) {
+export function EnrollDialog({ open, onOpenChange, onPaid }: Props) {
   const { session, currency } = useMoney();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -52,18 +49,6 @@ export function EnrollDialog({ open, onOpenChange, sessionAt, onPaid }: Props) {
       onPaid(existing);
     }
   }, [open]);
-
-  function downloadIcs(enrollment: Enrollment) {
-    const blob = new Blob([sessionIcs(sessionAt, enrollment.name, enrollment.price)], {
-      type: "text/calendar;charset=utf-8",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "prakashmurthy-cissp.ics";
-    a.click();
-    URL.revokeObjectURL(url);
-  }
 
   function submit(e: FormEvent) {
     e.preventDefault();
@@ -97,16 +82,15 @@ export function EnrollDialog({ open, onOpenChange, sessionAt, onPaid }: Props) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         {done ? (
-          <Success enrollment={done} sessionAt={sessionAt} onCalendar={downloadIcs} />
+          <Success enrollment={done} />
         ) : (
           <>
             <DialogHeader>
               <p className="text-kicker font-medium uppercase text-accent">Reserve a seat</p>
-              <DialogTitle>Sunday 4 Oct · {session}</DialogTitle>
+              <DialogTitle>Two live hours · {session}</DialogTitle>
               <DialogDescription>
-                {formatSessionLong(sessionAt)}. Pick ₹, $, or €. This opens an
-                email to {HOST_EMAIL}. I reply with how to pay and the join
-                link. Live only, no recording.
+                Pick ₹, $, or €. This opens an email to {HOST_EMAIL}. I reply
+                with how to pay and the join link. Live only, no recording.
               </DialogDescription>
             </DialogHeader>
             <div>
@@ -205,15 +189,7 @@ function Field({
   );
 }
 
-function Success({
-  enrollment,
-  sessionAt,
-  onCalendar,
-}: {
-  enrollment: Enrollment;
-  sessionAt: Date;
-  onCalendar: (enrollment: Enrollment) => void;
-}) {
+function Success({ enrollment }: { enrollment: Enrollment }) {
   return (
     <>
       <DialogHeader>
@@ -222,36 +198,30 @@ function Success({
         </span>
         <DialogTitle>You’re in, {enrollment.name.split(" ")[0]}.</DialogTitle>
         <DialogDescription>
-          Seat request for {formatSessionLong(sessionAt)} goes to {HOST_EMAIL}.
-          Finish the email that opened, then watch {enrollment.email}.
+          Seat request goes to {HOST_EMAIL}. Finish the email that opened, then
+          watch {enrollment.email}.
         </DialogDescription>
       </DialogHeader>
       <ol className="flex flex-col gap-3 text-sm">
         <li className="flex gap-3">
           <span className="w-4 shrink-0 font-mono text-xs text-muted">1</span>
-          Watch {enrollment.email} for the Sunday join link.
+          Watch {enrollment.email} for the join link.
         </li>
         <li className="flex gap-3">
           <span className="w-4 shrink-0 font-mono text-xs text-muted">2</span>
-          Add Sunday 4 Oct to your calendar now. Live only — no recording.
+          Live only — no recording. Take notes.
         </li>
         <li className="flex gap-3">
           <span className="w-4 shrink-0 font-mono text-xs text-muted">3</span>
           Bring one practice question you keep missing. We use those in the stem drill.
         </li>
       </ol>
-      <div className="flex flex-col gap-2">
-        <Button type="button" size="lg" className="w-full" onClick={() => onCalendar(enrollment)}>
-          Add to calendar
-          <CalendarPlus />
-        </Button>
-        <Button type="button" variant="outline" size="lg" className="w-full" asChild>
-          <a href={enrollMailto(enrollment)}>
-            Email {HOST_NAME}
-            <Mail />
-          </a>
-        </Button>
-      </div>
+      <Button type="button" variant="outline" size="lg" className="w-full" asChild>
+        <a href={enrollMailto(enrollment)}>
+          Email {HOST_NAME}
+          <Mail />
+        </a>
+      </Button>
     </>
   );
 }

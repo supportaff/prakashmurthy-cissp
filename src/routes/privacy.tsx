@@ -17,12 +17,12 @@ export const Route = createFileRoute("/privacy")({
 
 function PrivacyPage() {
   return (
-    <LegalLayout title="Privacy policy" updated="22 September 2026">
+    <LegalLayout title="Privacy policy">
       <section>
         <h2>What this covers</h2>
         <p>
-          {HOST_NAME} collects only what is needed to sell you a seat on the 4
-          October CISSP webinar and to send the join link. Contact:{" "}
+          {HOST_NAME} collects only what is needed to hold your seat on the live
+          CISSP webinar and to send the join link. Contact:{" "}
           <a href={`mailto:${HOST_EMAIL}`}>{HOST_EMAIL}</a>.
         </p>
       </section>

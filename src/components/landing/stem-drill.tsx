@@ -53,7 +53,7 @@ export function StemDrill() {
           {hits} of {ITEMS.length}. Same facts. Different stem. Different answer.
         </p>
         <p className="mt-2 text-sm text-muted">
-          That switch is the hour. Sunday we do it on items you keep missing.
+          That switch is the hour. In the room we do it on items you keep missing.
         </p>
         <button
           type="button"

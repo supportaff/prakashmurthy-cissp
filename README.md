@@ -1,6 +1,6 @@
 # Prakashmurthy — CISSP first-attempt webinar
 
-Landing page for the live 2-hour CISSP session on **Sunday 4 October, 10:00 IST**.
+Landing page for a live 2-hour CISSP first-attempt briefing.
 
 - ₹199 / $3.99 / €3.99
 - Live only, no recording

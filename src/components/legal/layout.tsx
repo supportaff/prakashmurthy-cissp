@@ -4,11 +4,9 @@ import { HOST_EMAIL, HOST_NAME, SITE_HOST } from "@/lib/brand";
 
 export function LegalLayout({
   title,
-  updated,
   children,
 }: {
   title: string;
-  updated: string;
   children: ReactNode;
 }) {
   return (
@@ -32,7 +30,6 @@ export function LegalLayout({
       <main className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-20">
         <p className="text-kicker font-medium uppercase text-accent">Legal</p>
         <h1 className="font-display mt-3 text-4xl font-medium tracking-tight">{title}</h1>
-        <p className="mt-3 text-sm text-muted">Last updated {updated}</p>
         <div className="mt-10 flex flex-col gap-8 text-sm leading-relaxed text-muted [&_h2]:font-display [&_h2]:text-xl [&_h2]:font-medium [&_h2]:tracking-tight [&_h2]:text-fg [&_a]:text-fg [&_a]:underline [&_a]:underline-offset-4 [&_li]:mt-2">
           {children}
         </div>

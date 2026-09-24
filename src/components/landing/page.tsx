@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   Calendar,
@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/accordion";
 import { EnrollDialog } from "@/components/landing/enroll-dialog";
 import { CurrencyProvider, CurrencySelect, useMoney } from "@/components/landing/currency";
-import { LocalTime } from "@/components/landing/countdown";
 import { StemDrill } from "@/components/landing/stem-drill";
 import { EXAM_USD, USD_INR } from "@/lib/currency";
 import { HOST_EMAIL, HOST_NAME, SITE_HOST } from "@/lib/brand";
@@ -29,9 +28,6 @@ import {
   domains,
   failPatterns,
   faqsFor,
-  formatSessionLong,
-  formatSessionShort,
-  getNextSession,
   outcomes,
   readEnrollment,
   stories,
@@ -50,7 +46,6 @@ export function LandingPage() {
 }
 
 function LandingInner() {
-  const sessionAt = useMemo(() => getNextSession(), []);
   const [open, setOpen] = useState(false);
   const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
   const { session } = useMoney();
@@ -87,7 +82,7 @@ function LandingInner() {
       <TopBar />
       <Header onReserve={reserve} cta={cta} />
       <main id="main" className="pb-24 lg:pb-0">
-        <Hero sessionAt={sessionAt} onReserve={reserve} cta={cta} />
+        <Hero onReserve={reserve} cta={cta} />
         <CostOfFail />
         <Attempt />
         <Outcomes onReserve={reserve} cta={cta} />
@@ -97,20 +92,18 @@ function LandingInner() {
         <Domains />
         <Host />
         <Stories />
-        <Price onReserve={reserve} cta={cta} sessionAt={sessionAt} />
+        <Price onReserve={reserve} cta={cta} />
         <Faq />
-        <Close sessionAt={sessionAt} onReserve={reserve} cta={cta} />
+        <Close onReserve={reserve} cta={cta} />
       </main>
       <Footer />
       <StickyBar
-        sessionAt={sessionAt}
         onReserve={reserve}
         enrolled={Boolean(enrollment?.paid)}
       />
       <EnrollDialog
         open={open}
         onOpenChange={setOpen}
-        sessionAt={sessionAt}
         onPaid={(next) => {
           setEnrollment(next);
         }}
@@ -123,11 +116,7 @@ function TopBar() {
   return (
     <div className="bg-elevated text-fg">
       <p className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-3 px-4 py-2 text-center text-xs text-muted sm:px-6">
-        <span className="text-fg">Sunday 4 Oct · 10:00 IST</span>
-        <span aria-hidden="true" className="text-border">
-          ·
-        </span>
-        <span>Live only · no recording</span>
+        <span className="text-fg">Live only · no recording</span>
         <span aria-hidden="true" className="hidden text-border sm:inline">
           ·
         </span>
@@ -184,11 +173,9 @@ function Mark() {
 }
 
 function Hero({
-  sessionAt,
   onReserve,
   cta,
 }: {
-  sessionAt: Date;
   onReserve: () => void;
   cta: string;
 }) {
@@ -197,7 +184,7 @@ function Hero({
     <section className="relative">
       <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 lg:px-8 lg:py-24">
         <p className="fs-enter text-kicker font-medium uppercase text-accent">
-          Live webinar · Sunday 4 Oct · {session}
+          Live webinar · two hours · {session}
         </p>
         <h1
           className="fs-enter font-display mt-4 text-display font-medium tracking-tight"
@@ -230,10 +217,7 @@ function Hero({
         </div>
         <div className="fs-enter" style={{ animationDelay: "260ms" }}>
           <StemDrill />
-          <p className="mt-3 text-xs text-muted">
-            {formatSessionLong(sessionAt)} · live only · no recording
-          </p>
-          <LocalTime date={sessionAt} />
+          <p className="mt-3 text-xs text-muted">Live only · no recording</p>
         </div>
       </div>
     </section>
@@ -276,7 +260,7 @@ function Attempt() {
       </h2>
       <p className="mt-4 max-w-2xl text-muted">
         This is not a victory lap. It is the three things I changed after my
-        practice scores stalled — the same three we drill on Sunday 4 October.
+        practice scores stalled — the same three we drill in the room.
       </p>
       <div className="mt-12 grid gap-8 lg:grid-cols-3">
         {attemptBeats.map((beat) => (
@@ -302,7 +286,7 @@ function Outcomes({ onReserve, cta }: { onReserve: () => void; cta: string }) {
           Two live hours. Six things you can use on exam day — not a slide dump.
         </h2>
         <p className="mt-4 max-w-xl text-paper-muted">
-          Sunday 4 October, 10:00–12:00 IST. Cameras optional. Notes expected.
+          Two live hours. Cameras optional. Notes expected.
           No recording. Bring one practice item you keep missing.
         </p>
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -435,11 +419,11 @@ function Agenda() {
         <div className="lg:col-span-5">
           <p className="text-kicker font-medium uppercase text-accent">Two hours, timed</p>
           <h2 className="font-display mt-3 text-3xl font-medium tracking-tight sm:text-4xl">
-            Sunday 4 Oct, on the hour. Not a webinar that starts 18 minutes late.
+            Two hours, on the material. Not a webinar that wanders.
           </h2>
           <p className="mt-4 text-muted">
-            We start at 10:00 IST on Sunday 4 October. Cameras optional. Notes
-            expected. Bring one practice item you keep missing. There is no recording.
+            Cameras optional. Notes expected. Bring one practice item you keep
+            missing. There is no recording.
           </p>
           <div className="relative mt-8 overflow-hidden rounded-xl">
             <img
@@ -520,8 +504,8 @@ function Host() {
       <div className="mt-4 flex max-w-prose flex-col gap-4 text-muted">
         <p>
           Independent. Not ISC2. No unofficial item banks. I passed CISSP on
-          the first attempt after my mocks stalled. This Sunday, 4 October, I
-          run the same room so you do not fund the retake I almost bought.
+          the first attempt after my mocks stalled. I run the same room so you
+          do not fund the retake I almost bought.
         </p>
         <p>
           Questions before you sit:{" "}
@@ -538,8 +522,8 @@ function Host() {
       <ul className="mt-8 grid gap-3 text-sm sm:grid-cols-3">
         <li className="rounded-lg bg-surface p-4 shadow-[var(--shadow-border)]">
           <Clock3 className="size-4 text-accent" />
-          <p className="mt-3 font-medium">Sunday 4 Oct</p>
-          <p className="mt-1 text-muted">10:00–12:00 IST. Two live hours.</p>
+          <p className="mt-3 font-medium">Two live hours</p>
+          <p className="mt-1 text-muted">Cameras optional. Notes expected.</p>
         </li>
         <li className="rounded-lg bg-surface p-4 shadow-[var(--shadow-border)]">
           <Shield className="size-4 text-accent" />
@@ -589,11 +573,9 @@ function Stories() {
 function Price({
   onReserve,
   cta,
-  sessionAt,
 }: {
   onReserve: () => void;
   cta: string;
-  sessionAt: Date;
 }) {
   const { session, exam } = useMoney();
   return (
@@ -620,11 +602,9 @@ function Price({
         </div>
         <aside className="flex flex-col justify-between gap-6 rounded-xl bg-bg p-6 shadow-[var(--shadow-border)] lg:col-span-5">
           <div>
-            <p className="text-xs uppercase tracking-wider text-subtle">Sunday 4 Oct · live</p>
+            <p className="text-xs uppercase tracking-wider text-subtle">Live · no recording</p>
             <p className="font-display mt-2 text-4xl font-medium tracking-tight">{session}</p>
-            <p className="mt-2 text-sm text-muted">{formatSessionLong(sessionAt)}</p>
-            <LocalTime date={sessionAt} />
-            <p className="mt-1 text-sm text-muted">No recording. Seat by email.</p>
+            <p className="mt-2 text-sm text-muted">Two hours. Seat by email.</p>
             <div className="mt-4">
               <p className="mb-2 text-xs uppercase tracking-wider text-subtle">Pay in</p>
               <CurrencySelect />
@@ -673,11 +653,9 @@ function Faq() {
 }
 
 function Close({
-  sessionAt,
   onReserve,
   cta,
 }: {
-  sessionAt: Date;
   onReserve: () => void;
   cta: string;
 }) {
@@ -686,14 +664,13 @@ function Close({
     <section className="bg-paper text-paper-fg">
       <div className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 lg:py-28">
         <p className="text-kicker font-medium uppercase text-paper-muted">
-          Sunday 4 Oct · 10:00 IST · {session}
+          Two live hours · {session}
         </p>
         <h2 className="font-display mt-4 text-3xl font-medium tracking-tight sm:text-5xl">
           Don’t be the engineer who knew the material and still sat it twice.
         </h2>
         <p className="mx-auto mt-5 max-w-lg text-paper-muted">
-          {formatSessionLong(sessionAt)}. {session}. The CAT will not give you a
-          review screen. This room will.
+          {session}. The CAT will not give you a review screen. This room will.
         </p>
         <Button variant="paper" size="lg" className="mt-8" onClick={onReserve}>
           {cta}
@@ -711,9 +688,9 @@ function Footer() {
         <div>
           <Mark />
           <p className="mt-3 max-w-md">
-            Independent CISSP first-attempt briefing by {HOST_NAME}. Sunday 4
-            October. Live only — no recording. Not affiliated with, endorsed by,
-            or sponsored by ISC2. CISSP is a registered mark of ISC2, Inc.
+            Independent CISSP first-attempt briefing by {HOST_NAME}. Two live
+            hours. No recording. Not affiliated with, endorsed by, or sponsored
+            by ISC2. CISSP is a registered mark of ISC2, Inc.
           </p>
         </div>
         <div className="flex flex-col gap-2 sm:items-end">
@@ -748,7 +725,7 @@ function ShareLink() {
     const url = window.location.href;
     const payload = {
       title: `${HOST_NAME} — CISSP first-attempt webinar`,
-      text: "Sunday 4 Oct, 10:00 IST. Live, no recording.",
+      text: "Live CISSP first-attempt briefing. No recording.",
       url,
     };
     try {
@@ -775,11 +752,9 @@ function ShareLink() {
 }
 
 function StickyBar({
-  sessionAt,
   onReserve,
   enrolled,
 }: {
-  sessionAt: Date;
   onReserve: () => void;
   enrolled: boolean;
 }) {
@@ -789,9 +764,9 @@ function StickyBar({
       <div className="flex items-center gap-3 px-4 py-3 pb-safe">
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-medium">
-            {enrolled ? "You’re in" : `${session} · Sunday 4 Oct`}
+            {enrolled ? "You’re in" : `${session} · two live hours`}
           </p>
-          <p className="truncate text-xs text-muted">{formatSessionShort(sessionAt)} IST</p>
+          <p className="truncate text-xs text-muted">No recording</p>
         </div>
         <Button size="sm" onClick={onReserve} className="shrink-0">
           {enrolled ? "View" : "Reserve"}

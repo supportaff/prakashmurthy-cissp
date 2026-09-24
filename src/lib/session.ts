@@ -1,11 +1,7 @@
-import { HOST_EMAIL, HOST_NAME, SITE_URL, mailtoHost } from "@/lib/brand";
+import { HOST_EMAIL, HOST_NAME, mailtoHost } from "@/lib/brand";
 import type { Currency } from "@/lib/currency";
 
-export const SESSION_MINUTES = 120;
 export const ENROLL_KEY = "prakash:enroll";
-
-/** Sunday 4 October 2026, 10:00 IST (04:30 UTC). */
-export const SESSION_AT = new Date(Date.UTC(2026, 9, 4, 4, 30, 0));
 
 export type Enrollment = {
   name: string;
@@ -25,83 +21,12 @@ export const examWindows: { id: ExamWindow; label: string; hint: string }[] = [
   { id: "later", label: "Still dating the OSG", hint: "Come anyway" },
 ];
 
-export function getNextSession(): Date {
-  return SESSION_AT;
-}
-
-export function formatSessionLong(date: Date): string {
-  return (
-    new Intl.DateTimeFormat("en-IN", {
-      timeZone: "Asia/Kolkata",
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    }).format(date) + " IST"
-  );
-}
-
-export function formatSessionShort(date: Date): string {
-  return new Intl.DateTimeFormat("en-IN", {
-    timeZone: "Asia/Kolkata",
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  }).format(date);
-}
-
-export function formatSessionLocal(date: Date): string | null {
-  if (typeof window === "undefined") return null;
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  if (tz === "Asia/Kolkata" || tz === "Asia/Calcutta") return null;
-  return new Intl.DateTimeFormat(undefined, {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    hour: "numeric",
-    minute: "2-digit",
-    timeZoneName: "short",
-  }).format(date);
-}
-
-export function sessionIcs(date: Date, name: string, price: string): string {
-  const start = date.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
-  const endDate = new Date(date.getTime() + SESSION_MINUTES * 60_000);
-  const end = endDate.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
-  const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
-  return [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
-    `PRODID:-//${HOST_NAME}//CISSP Briefing//EN`,
-    "CALSCALE:GREGORIAN",
-    "METHOD:PUBLISH",
-    "BEGIN:VEVENT",
-    `UID:cissp-${start}@prakashmurthy.com`,
-    `DTSTAMP:${stamp}`,
-    `DTSTART:${start}`,
-    `DTEND:${end}`,
-    `ORGANIZER;CN=${HOST_NAME}:MAILTO:${HOST_EMAIL}`,
-    `SUMMARY:${HOST_NAME} — CISSP first-attempt webinar`,
-    `DESCRIPTION:Live 2-hour CISSP first-attempt session with ${HOST_NAME} for ${name}. Seat ${price}. Join link from ${HOST_EMAIL}. No recording.`,
-    "LOCATION:Live online",
-    `URL:${SITE_URL}`,
-    "END:VEVENT",
-    "END:VCALENDAR",
-  ].join("\r\n");
-}
-
 export function enrollMailto(enrollment: Enrollment): string {
   const windowLabel = examWindows.find((w) => w.id === enrollment.window)?.label ?? enrollment.window;
   return mailtoHost(
     `CISSP seat — ${enrollment.name} — ${enrollment.price}`,
     [
-      `New seat for Sunday 4 October 2026, 10:00 IST.`,
+      `New seat for the live CISSP briefing.`,
       ``,
       `Name: ${enrollment.name}`,
       `Email: ${enrollment.email}`,
@@ -142,11 +67,11 @@ export const domains = [
 ] as const;
 
 export const agenda = [
-  { t: "00:00", title: "How I almost failed before I sat", body: "The practice-score trap I was in, and why CAT ends people who 'know the book'." },
-  { t: "00:18", title: "The manager test", body: "A 12-minute drill. Same fact pattern, four stems. You'll feel the gap between engineer-brain and CISSP-brain." },
-  { t: "00:42", title: "Stem words that rewrite the answer", body: "BEST, MOST, FIRST, NOT, LEAST — and the ethics tie-break when two answers both 'work'." },
-  { t: "01:08", title: "Domain trap map", body: "Where first-timers bleed. Weighted to the 16% and 13% domains, not a tour of all eight." },
-  { t: "01:32", title: "The 48-hour plan + your missed item", body: "What to stop studying. Sleep. Exam-day protocol. We run one question you keep missing. Open until 02:00." },
+  { t: "01", title: "How I almost failed before I sat", body: "The practice-score trap I was in, and why CAT ends people who 'know the book'." },
+  { t: "02", title: "The manager test", body: "A short drill. Same fact pattern, four stems. You'll feel the gap between engineer-brain and CISSP-brain." },
+  { t: "03", title: "Stem words that rewrite the answer", body: "BEST, MOST, FIRST, NOT, LEAST — and the ethics tie-break when two answers both 'work'." },
+  { t: "04", title: "Domain trap map", body: "Where first-timers bleed. Weighted to the 16% and 13% domains, not a tour of all eight." },
+  { t: "05", title: "The 48-hour plan + your missed item", body: "What to stop studying. Sleep. Exam-day protocol. We run one question you keep missing." },
 ] as const;
 
 export const outcomes = [
@@ -226,7 +151,7 @@ export function faqsFor(price: string) {
   return [
     {
       q: `${price} is suspiciously cheap. Is this a pitch for a long paid course?`,
-      a: "No. Two hours on Sunday 4 October. Tips and tricks from a first-attempt pass. No slide-deck upsell, no 'stay for the masterclass'. If I ever run a longer cohort, it is a separate product with a separate page.",
+      a: "No. Two live hours. Tips and tricks from a first-attempt pass. No slide-deck upsell, no 'stay for the masterclass'. If I ever run a longer cohort, it is a separate product with a separate page.",
     },
     {
       q: "How do I pay, and how do I join?",
@@ -245,12 +170,12 @@ export function faqsFor(price: string) {
       a: "Yes if your exam is inside eight weeks. This briefing does not teach the CBK from zero. It stops you from studying like an engineer into a manager's exam.",
     },
     {
-      q: "I sit before 4 October. Too late?",
-      a: "If you already sit before the webinar, sleep, skim ethics, and do not cram a new domain at midnight. This room is for the sitting still ahead of you.",
+      q: "I already have an exam booked. Too late?",
+      a: "If your exam is already behind you, this room will not help that sitting. If it is still ahead, come. Do not cram a new domain the night before.",
     },
     {
       q: "Do I get a recording?",
-      a: "No. This session is live only. Take notes. If you miss Sunday 4 October, this sitting is gone.",
+      a: "No. This session is live only. Take notes. If you miss the sitting, there is no replay.",
     },
     {
       q: "Where are the terms and privacy policy?",
@@ -266,7 +191,7 @@ export function faqsFor(price: string) {
 export const stories = [
   {
     quote:
-      "I was answering as a network engineer. The manager drill was uncomfortable and then obvious. Passed at 100 questions the following Friday.",
+      "I was answering as a network engineer. The manager drill was uncomfortable and then obvious. Passed at 100 questions the week after.",
     name: "Rohan K.",
     role: "Cloud security · Pune",
   },
