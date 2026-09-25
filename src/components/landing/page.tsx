@@ -17,7 +17,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { EnrollDialog } from "@/components/landing/enroll-dialog";
 import { CurrencyProvider, CurrencySelect, useMoney } from "@/components/landing/currency";
 import { StemDrill } from "@/components/landing/stem-drill";
 import { EXAM_USD, USD_INR } from "@/lib/currency";
@@ -33,7 +32,6 @@ import {
   sessionWhenShort,
   stories,
   walkOutWith,
-  writeEnrollment,
   type Enrollment,
 } from "@/lib/session";
 
@@ -45,28 +43,19 @@ export function LandingPage() {
   );
 }
 
+const FORM_SRC =
+  "https://docs.google.com/forms/d/e/1FAIpQLSel4-oYdDHRFuFUcDN3CihowE_mg1i-jhOpYg09d8a-15K-CA/viewform?embedded=true";
+
 function LandingInner() {
-  const [open, setOpen] = useState(false);
   const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
   const { session } = useMoney();
 
   useEffect(() => {
-    const existing = readEnrollment();
-    const paid = new URLSearchParams(window.location.search).get("paid") === "1";
-    if (paid && existing && !existing.paid) {
-      const next = { ...existing, paid: true };
-      writeEnrollment(next);
-      setEnrollment(next);
-      setOpen(true);
-      window.history.replaceState({}, "", window.location.pathname);
-      return;
-    }
-    setEnrollment(existing);
-    if (paid) setOpen(true);
+    setEnrollment(readEnrollment());
   }, []);
 
   function reserve() {
-    setOpen(true);
+    document.getElementById("enroll")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   const cta = enrollment?.paid ? "You’re in" : `Reserve · ${session}`;
@@ -91,6 +80,7 @@ function LandingInner() {
         <Host />
         <Stories />
         <Price onReserve={reserve} cta={cta} />
+        <EnrollForm />
         <Faq />
         <Close onReserve={reserve} cta={cta} />
       </main>
@@ -98,13 +88,6 @@ function LandingInner() {
       <StickyBar
         onReserve={reserve}
         enrolled={Boolean(enrollment?.paid)}
-      />
-      <EnrollDialog
-        open={open}
-        onOpenChange={setOpen}
-        onPaid={(next) => {
-          setEnrollment(next);
-        }}
       />
     </div>
   );
@@ -534,8 +517,9 @@ function Price({
           </h2>
           <p className="mt-4 max-w-prose text-muted">
             ₹199, $3.99, or €3.99 is the same seat. No early-bird, no coupon, no
-            dearer chat price. {sessionWhen()}. Live only — no recording. I reply
-            from {HOST_EMAIL} with how to pay. The join link follows payment.
+            dearer chat price. {sessionWhen()}. Live only — no recording. Register
+            below. I reply from {HOST_EMAIL} with how to pay. The join link
+            follows payment.
           </p>
           <ul className="mt-8 flex flex-col gap-3">
             {failPatterns.map((line) => (
@@ -566,6 +550,32 @@ function Price({
             </p>
           </div>
         </aside>
+      </div>
+    </section>
+  );
+}
+
+function EnrollForm() {
+  return (
+    <section id="enroll" className="scroll-mt-20 border-t border-border">
+      <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:py-24">
+        <p className="text-kicker font-medium uppercase text-accent">Register</p>
+        <h2 className="font-display mt-3 text-3xl font-medium tracking-tight sm:text-4xl">
+          Take the seat.
+        </h2>
+        <p className="mt-4 max-w-prose text-muted">
+          Name, WhatsApp, and whether the exam is already booked. I reply from{" "}
+          {HOST_EMAIL} with how to pay. The join link follows payment.
+        </p>
+        <div className="mt-8 overflow-hidden rounded-2xl bg-surface shadow-[var(--shadow-border)]">
+          <iframe
+            src={FORM_SRC}
+            title="CISSP webinar registration"
+            className="h-[1680px] w-full bg-surface"
+          >
+            Loading the registration form…
+          </iframe>
+        </div>
       </div>
     </section>
   );
