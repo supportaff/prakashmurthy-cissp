@@ -55,6 +55,7 @@ function LandingInner() {
       <TopBar />
       <Header onReserve={reserve} cta={cta} />
       <main id="main" className="pb-24 lg:pb-0">
+        <EnrollForm />
         <Hero onReserve={reserve} cta={cta} />
         <CostOfFail onReserve={reserve} cta={cta} />
         <Outcomes onReserve={reserve} cta={cta} />
@@ -63,7 +64,6 @@ function LandingInner() {
         <Agenda />
         <Host />
         <Stories />
-        <EnrollForm />
         <Faq />
         <Close onReserve={reserve} cta={cta} />
       </main>
@@ -473,8 +473,8 @@ function Stories() {
 
 function EnrollForm() {
   return (
-    <section id="enroll" className="scroll-mt-20 border-t border-border">
-      <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:py-24">
+    <section id="enroll" className="scroll-mt-20">
+      <div className="mx-auto max-w-3xl px-4 pt-8 pb-6 sm:px-6 lg:pt-10">
         <p className="text-kicker font-medium uppercase text-accent">Register</p>
         <h2 className="font-display mt-3 text-3xl font-medium tracking-tight sm:text-4xl">
           Take the seat.
