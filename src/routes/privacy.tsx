@@ -9,7 +9,7 @@ export const Route = createFileRoute("/privacy")({
       { title: `Privacy — ${HOST_NAME}` },
       {
         name: "description",
-        content: `How ${HOST_NAME} handles name, email, and payment data for the CISSP webinar on ${SITE_HOST}.`,
+        content: `How ${HOST_NAME} handles the registration form for the CISSP webinar on ${SITE_HOST}.`,
       },
     ],
   }),
@@ -30,13 +30,8 @@ function PrivacyPage() {
       <section>
         <h2>What we collect</h2>
         <ul className="list-disc pl-5">
-          <li>Name and email you type on this site.</li>
-          <li>Exam window you select (how soon you sit).</li>
-          <li>Currency you choose (₹, $, or €).</li>
-          <li>
-            A local “you’re in” flag in your browser (localStorage). Not a
-            tracking cookie.
-          </li>
+          <li>Name, email, phone, and the other answers you submit on the registration form.</li>
+          <li>Whether your exam is already scheduled, if you say so.</li>
         </ul>
         <p className="mt-3">
           We do not ask for Aadhaar, passport, CISSP candidate ID, or exam
@@ -47,9 +42,8 @@ function PrivacyPage() {
       <section>
         <h2>Why</h2>
         <p>
-          To hold your seat request and reply from {HOST_EMAIL} with how to
-          pay and the join link. We do not sell lists, run ads on this data, or
-          train models on it.
+          To reply from {HOST_EMAIL} with the join link. We do not sell lists,
+          run ads on this data, or train models on it.
         </p>
       </section>
 
@@ -57,7 +51,7 @@ function PrivacyPage() {
         <h2>Who else sees it</h2>
         <ul className="list-disc pl-5">
           <li>
-            Your mail app, when you send the seat request to {HOST_EMAIL}.
+            Google Forms, which stores the registration you submit.
           </li>
           <li>
             Vercel — hosts this site. Request logs may include IP and user
@@ -73,10 +67,8 @@ function PrivacyPage() {
       <section>
         <h2>How long</h2>
         <p>
-          Enrolment and payment records are kept as long as needed for tax and
-          to prove you bought a seat, then deleted on request unless the law
-          requires a longer hold. Browser localStorage stays until you clear
-          it.
+          Registration answers are kept until the sitting is over, then deleted
+          on request unless the law requires a longer hold.
         </p>
       </section>
 
@@ -97,8 +89,8 @@ function PrivacyPage() {
       <section>
         <h2>Changes</h2>
         <p>
-          Material changes will be dated on this page. Paying after a change
-          means you accept the new text. Session terms are in the{" "}
+          Material changes will be dated on this page. Sending the form after a
+          change means you accept the new text. Session terms are in the{" "}
           <Link to="/terms">terms of service</Link>.
         </p>
       </section>

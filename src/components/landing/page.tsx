@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
 import {
   ArrowRight,
   Calendar,
@@ -17,9 +16,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { CurrencyProvider, CurrencySelect, useMoney } from "@/components/landing/currency";
 import { StemDrill } from "@/components/landing/stem-drill";
-import { EXAM_USD, USD_INR } from "@/lib/currency";
 import { HOST_EMAIL, HOST_NAME, SITE_HOST } from "@/lib/brand";
 import {
   agenda,
@@ -27,38 +24,25 @@ import {
   failPatterns,
   faqsFor,
   outcomes,
-  readEnrollment,
   sessionWhen,
   sessionWhenShort,
   stories,
   walkOutWith,
-  type Enrollment,
 } from "@/lib/session";
 
 export function LandingPage() {
-  return (
-    <CurrencyProvider>
-      <LandingInner />
-    </CurrencyProvider>
-  );
+  return <LandingInner />;
 }
 
 const FORM_SRC =
   "https://docs.google.com/forms/d/e/1FAIpQLSel4-oYdDHRFuFUcDN3CihowE_mg1i-jhOpYg09d8a-15K-CA/viewform?embedded=true";
 
 function LandingInner() {
-  const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
-  const { session } = useMoney();
-
-  useEffect(() => {
-    setEnrollment(readEnrollment());
-  }, []);
-
   function reserve() {
     document.getElementById("enroll")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  const cta = enrollment?.paid ? "You’re in" : `Reserve · ${session}`;
+  const cta = "Register";
 
   return (
     <div className="bg-bg text-fg">
@@ -79,16 +63,12 @@ function LandingInner() {
         <Agenda />
         <Host />
         <Stories />
-        <Price onReserve={reserve} cta={cta} />
         <EnrollForm />
         <Faq />
         <Close onReserve={reserve} cta={cta} />
       </main>
       <Footer />
-      <StickyBar
-        onReserve={reserve}
-        enrolled={Boolean(enrollment?.paid)}
-      />
+      <StickyBar onReserve={reserve} />
     </div>
   );
 }
@@ -105,7 +85,7 @@ function TopBar() {
         <span aria-hidden="true" className="hidden text-border sm:inline">
           ·
         </span>
-        <span className="hidden sm:inline">Pay in ₹ $ €</span>
+        <span className="hidden sm:inline">Fill the form to join</span>
       </p>
     </div>
   );
@@ -133,7 +113,6 @@ function Header({ onReserve, cta }: { onReserve: () => void; cta: string }) {
           </a>
         </nav>
         <div className="flex items-center gap-2">
-          <CurrencySelect compact />
           <Button size="sm" onClick={onReserve} className="hidden sm:inline-flex">
             {cta}
           </Button>
@@ -164,12 +143,11 @@ function Hero({
   onReserve: () => void;
   cta: string;
 }) {
-  const { session, exam } = useMoney();
   return (
     <section className="relative">
       <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 lg:px-8 lg:py-24">
         <p className="fs-enter text-kicker font-medium uppercase text-accent">
-          {sessionWhen()} · {session}
+          {sessionWhen()}
         </p>
         <h1
           className="fs-enter font-display mt-4 text-display font-medium tracking-tight"
@@ -182,7 +160,7 @@ function Hero({
           style={{ animationDelay: "140ms" }}
         >
           Not a CBK lecture. The thinking switch, CAT pacing, stem words, and
-          48-hour plan I used so I never paid the {exam} exam twice. Live only
+          48-hour plan I used so I sat it once. Live only
           — no recording. You leave with a drill you can sit this week.
         </p>
         <div
@@ -210,21 +188,16 @@ function Hero({
 }
 
 function CostOfFail({ onReserve, cta }: { onReserve: () => void; cta: string }) {
-  const { session, exam, currency } = useMoney();
-  const examNote =
-    currency === "INR"
-      ? `Official fee $${EXAM_USD} at ₹${USD_INR}. You pay this even if you fail.`
-      : "Official ISC2 fee. You pay this even if you fail.";
   return (
     <section className="border-y border-border">
       <div className="mx-auto grid max-w-6xl gap-0 px-0 sm:grid-cols-3">
-        <CostCell k="CISSP exam" v={exam} d={examNote} />
-        <CostCell k="A retake" v={`+${exam}`} d="Plus 30 days you cannot sit. The expensive lesson." />
-        <CostCell k="This webinar" v={session} d="Same room in every currency. One price. No second tier." />
+        <CostCell k="A miss" v="Another sitting" d="Most people who fail knew the material. They answered as the engineer." />
+        <CostCell k="The wait" v="30 days" d="You cannot sit again the next morning. The calendar moves." />
+        <CostCell k="This room" v="Two hours" d="Live. No recording. You register by filling the form." />
       </div>
       <div className="mx-auto flex max-w-6xl flex-col items-start gap-3 px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-muted">
-          The exam fee is the number that matters. {session} is the hedge against paying it twice.
+          Fill the form. That is how you join {sessionWhen()}.
         </p>
         <Button onClick={onReserve}>
           {cta}
@@ -250,7 +223,7 @@ function Attempt() {
     <section id="attempt" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
       <p className="text-kicker font-medium uppercase text-accent">How I cleared it first time</p>
       <h2 className="font-display mt-3 max-w-3xl text-3xl font-medium tracking-tight sm:text-4xl">
-        I sat CISSP one time. I passed. I was six weeks from buying a retake.
+        I sat CISSP one time. I passed. I was six weeks from sitting it again.
       </h2>
       <p className="mt-4 max-w-2xl text-muted">
         This is not a victory lap. It is the three things I changed after my
@@ -346,7 +319,7 @@ function Audience({ onReserve, cta }: { onReserve: () => void; cta: string }) {
               "Your exam is inside eight weeks.",
               "Practice tests stall around 65–75%.",
               "You keep missing BEST / FIRST stems.",
-              "You would rather not fund a retake.",
+              "You would rather sit it once.",
             ]}
           />
           <AudienceCard
@@ -470,13 +443,12 @@ function Host() {
 }
 
 function Stories() {
-  const { session } = useMoney();
   return (
     <section className="border-y border-border">
       <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
         <p className="text-kicker font-medium uppercase text-accent">After the room</p>
         <h2 className="font-display mt-3 max-w-xl text-3xl font-medium tracking-tight sm:text-4xl">
-          People who almost talked themselves out of {session}.
+          People who almost talked themselves out of coming.
         </h2>
         <div className="mt-12 grid gap-6 lg:grid-cols-3">
           {stories.map((s) => (
@@ -499,62 +471,6 @@ function Stories() {
   );
 }
 
-function Price({
-  onReserve,
-  cta,
-}: {
-  onReserve: () => void;
-  cta: string;
-}) {
-  const { session, exam } = useMoney();
-  return (
-    <section id="reserve" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-      <div className="grid gap-10 rounded-2xl bg-surface p-6 shadow-[var(--shadow-border)] sm:p-10 lg:grid-cols-12">
-        <div className="lg:col-span-7">
-          <p className="text-kicker font-medium uppercase text-accent">One price</p>
-          <h2 className="font-display mt-3 text-3xl font-medium tracking-tight sm:text-4xl">
-            {session}. Not {exam} twice.
-          </h2>
-          <p className="mt-4 max-w-prose text-muted">
-            ₹199, $3.99, or €3.99 is the same seat. No early-bird, no coupon, no
-            dearer chat price. {sessionWhen()}. Live only — no recording. Register
-            below. I reply from {HOST_EMAIL} with how to pay. The join link
-            follows payment.
-          </p>
-          <ul className="mt-8 flex flex-col gap-3">
-            {failPatterns.map((line) => (
-              <li key={line} className="flex gap-3 text-sm">
-                <span className="mt-2 size-1 shrink-0 rounded-full bg-accent" />
-                <span className="text-muted">{line}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <aside className="flex flex-col justify-between gap-6 rounded-xl bg-bg p-6 shadow-[var(--shadow-border)] lg:col-span-5">
-          <div>
-            <p className="text-xs uppercase tracking-wider text-subtle">{sessionWhen()}</p>
-            <p className="font-display mt-2 text-4xl font-medium tracking-tight">{session}</p>
-            <p className="mt-2 text-sm text-muted">One seat. Against an exam of {exam}.</p>
-            <div className="mt-4">
-              <p className="mb-2 text-xs uppercase tracking-wider text-subtle">Pay in</p>
-              <CurrencySelect />
-            </div>
-          </div>
-          <div className="flex flex-col gap-3">
-            <Button size="lg" onClick={onReserve} className="w-full">
-              {cta}
-              <ArrowRight />
-            </Button>
-            <p className="text-center text-xs text-muted">
-              Pay after you reserve. Join link only once payment lands.
-            </p>
-          </div>
-        </aside>
-      </div>
-    </section>
-  );
-}
-
 function EnrollForm() {
   return (
     <section id="enroll" className="scroll-mt-20 border-t border-border">
@@ -565,7 +481,7 @@ function EnrollForm() {
         </h2>
         <p className="mt-4 max-w-prose text-muted">
           Name, WhatsApp, and whether the exam is already booked. I reply from{" "}
-          {HOST_EMAIL} with how to pay. The join link follows payment.
+          {HOST_EMAIL} with the join link.
         </p>
         <div className="mt-8 overflow-hidden rounded-2xl bg-surface shadow-[var(--shadow-border)]">
           <iframe
@@ -582,8 +498,7 @@ function EnrollForm() {
 }
 
 function Faq() {
-  const { session } = useMoney();
-  const items = faqsFor(session);
+  const items = faqsFor();
   return (
     <section id="faq" className="border-t border-border">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-12 lg:px-8 lg:py-28">
@@ -615,18 +530,17 @@ function Close({
   onReserve: () => void;
   cta: string;
 }) {
-  const { session } = useMoney();
   return (
     <section className="bg-paper text-paper-fg">
       <div className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 lg:py-28">
         <p className="text-kicker font-medium uppercase text-paper-muted">
-          {sessionWhen()} · {session}
+          {sessionWhen()}
         </p>
         <h2 className="font-display mt-4 text-3xl font-medium tracking-tight sm:text-5xl">
           Don’t be the engineer who knew the material and still sat it twice.
         </h2>
         <p className="mx-auto mt-5 max-w-lg text-paper-muted">
-          {sessionWhen()}. {session}. The CAT will not give you a review screen. This room will.
+          {sessionWhen()}. The CAT will not give you a review screen. This room will.
         </p>
         <Button variant="paper" size="lg" className="mt-8" onClick={onReserve}>
           {cta}
@@ -710,25 +624,16 @@ function ShareLink() {
   );
 }
 
-function StickyBar({
-  onReserve,
-  enrolled,
-}: {
-  onReserve: () => void;
-  enrolled: boolean;
-}) {
-  const { session } = useMoney();
+function StickyBar({ onReserve }: { onReserve: () => void }) {
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-bg/95 lg:hidden">
       <div className="flex items-center gap-3 px-4 py-3 pb-safe">
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium">
-            {enrolled ? "You’re in" : session}
-          </p>
+          <p className="truncate text-sm font-medium">Sunday 11 October</p>
           <p className="truncate text-xs text-muted">{sessionWhenShort()}</p>
         </div>
         <Button size="sm" onClick={onReserve} className="shrink-0">
-          {enrolled ? "View" : "Reserve"}
+          Register
           <ArrowRight />
         </Button>
       </div>

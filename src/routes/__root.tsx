@@ -13,7 +13,7 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: APP_NAME },
-      { name: "description", content: `${sessionWhen()}. Live 2-hour CISSP webinar with Prakashmurthy. ₹199 / $3.99 / €3.99. Live only, no recording.` },
+      { name: "description", content: `${sessionWhen()}. Live 2-hour CISSP webinar with Prakashmurthy. Fill the form to join. Live only, no recording.` },
       { name: "theme-color", content: "#faf9f6" },
     ],
     links: [

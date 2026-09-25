@@ -172,15 +172,15 @@ export const tipsPreview = [
   },
 ] as const;
 
-export function faqsFor(price: string) {
+export function faqsFor() {
   return [
     {
-      q: `${price} is suspiciously cheap. Is this a pitch for a long paid course?`,
-      a: `No. ${sessionWhen()}. One price, one room. No slide-deck upsell. If I ever run a longer cohort, it is a separate product with a separate page.`,
+      q: "Is this a pitch for a long course?",
+      a: `No. ${sessionWhen()}. One room. No slide-deck upsell. If I ever run a longer cohort, it is a separate page.`,
     },
     {
-      q: "How do I pay, and how do I join?",
-      a: `Send a seat request at the price you picked (₹199, $3.99, or €3.99). I reply from ${HOST_EMAIL} with how to pay. The join link goes out after payment, for ${sessionWhen()}.`,
+      q: "How do I join?",
+      a: `Fill the form on this page. I reply from ${HOST_EMAIL} with the join link for ${sessionWhen()}.`,
     },
     {
       q: "Is this affiliated with ISC2?",
@@ -228,7 +228,7 @@ export const stories = [
   },
   {
     quote:
-      "I almost skipped it because the price felt unserious. That was the whole problem. Highest-return two hours of my prep.",
+      "I almost skipped it. Then the manager drill made the misses obvious. Highest-return two hours of my prep.",
     name: "Arjun M.",
     role: "AppSec · Bengaluru",
   },

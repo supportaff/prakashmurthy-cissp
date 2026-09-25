@@ -22,8 +22,8 @@ function TermsPage() {
       <section>
         <h2>Who this is</h2>
         <p>
-          These terms cover the live two-hour CISSP first-attempt webinar sold
-          on {SITE_URL}. The operator is {HOST_NAME}. Contact:{" "}
+          These terms cover the live two-hour CISSP first-attempt webinar on{" "}
+          {SITE_URL}. The operator is {HOST_NAME}. Contact:{" "}
           <a href={`mailto:${HOST_EMAIL}`}>{HOST_EMAIL}</a>.
         </p>
         <p className="mt-3">
@@ -35,9 +35,9 @@ function TermsPage() {
       <section>
         <h2>The session</h2>
         <p>
-          One live sitting, {sessionWhen()}. You receive how to pay by email
-          after you reserve. The join link follows payment. The session is live
-          only. There is no recording and no replay.
+          One live sitting, {sessionWhen()}. You join by filling the form on
+          this site. {HOST_NAME} replies from {HOST_EMAIL} with the join link.
+          The session is live only. There is no recording and no replay.
         </p>
         <p className="mt-3">
           The briefing covers how {HOST_NAME} passed CISSP on a first attempt:
@@ -48,12 +48,11 @@ function TermsPage() {
       </section>
 
       <section>
-        <h2>Price and payment</h2>
+        <h2>How you join</h2>
         <p>
-          The seat is ₹199, $3.99, or €3.99 depending on the currency you
-          choose. You request the seat by email. {HOST_NAME} replies from{" "}
-          {HOST_EMAIL} with how to pay and the join link. A paid seat is a
-          licence to attend that live sitting, not a course subscription.
+          Fill the registration form. {HOST_NAME} replies from {HOST_EMAIL}{" "}
+          with the join link for that sitting. A registration is a place in
+          that live room, not a course subscription.
         </p>
       </section>
 
@@ -80,9 +79,8 @@ function TermsPage() {
         <h2>Conduct and content</h2>
         <p>
           Notes you take are yours. You may not record the session, share the
-          join link, or republish the drills as a paid product. {HOST_NAME} may
-          remove anyone who asks for dumps or disrupts the room, without a
-          second seat.
+          join link, or republish the drills as a product. {HOST_NAME} may
+          remove anyone who asks for dumps or disrupts the room.
         </p>
       </section>
 
@@ -90,10 +88,9 @@ function TermsPage() {
         <h2>If something fails</h2>
         <p>
           If the host cannot run the sitting (illness, platform outage), you
-          will be offered another live sitting or the fee back, at the host’s
-          choice. If you do not attend a sitting that ran as advertised, the
-          seat is used. Exam outcomes, employer decisions, and ISC2 results are
-          outside this agreement.
+          will be offered another live sitting. If you do not attend a sitting
+          that ran as advertised, that place is used. Exam outcomes, employer
+          decisions, and ISC2 results are outside this agreement.
         </p>
       </section>
 
@@ -106,8 +103,8 @@ function TermsPage() {
         </p>
         <p className="mt-3">
           Privacy is in the{" "}
-          <Link to="/privacy">privacy policy</Link>. Paying means you have read
-          both.
+          <Link to="/privacy">privacy policy</Link>. Sending the form means you
+          have read both.
         </p>
       </section>
     </LegalLayout>
